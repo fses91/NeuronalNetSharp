@@ -8,5 +8,6 @@ namespace NeuronalNetSharp.Core
 {
     public class Class1
     {
+
     }
 }
