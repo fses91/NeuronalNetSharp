@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace NeuronalNetSharp.Core
 {
-    public class Class1
+    public class NeuronalNetwork
     {
-
+        public NeuronalNetwork()
+        {
+            
+        }
     }
 }

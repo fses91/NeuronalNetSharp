@@ -1,28 +1,20 @@
-﻿using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NeuronalNetSharp.Import.Importer;
 
 namespace NeuronalNetSharp.Console
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var A = DenseMatrix.OfArray(new double[,] {
-                    {1,1,1},
-                    {1,2,3},
-                    {4,3,2}});
+            var test = new MinstImporter();
 
-            var B = DenseMatrix.OfArray(new double[,] {
-                    {1,1,1},
-                    {1,2,4},
-                    {4,3,1}});
+            var test2 = test.ImportData(@"C:\Users\flori\Desktop\train-images-idx3-ubyte",
+                @"C:\Users\flori\Desktop\train-labels-idx1-ubyte", 20);
 
-            var C = A * B;
 
         }
     }
