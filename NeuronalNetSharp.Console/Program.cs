@@ -1,7 +1,7 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MathNet.Numerics.LinearAlgebra.Single;
 using NeuronalNetSharp.Import.Importer;
 
 namespace NeuronalNetSharp.Console
@@ -10,12 +10,13 @@ namespace NeuronalNetSharp.Console
     {
         private static void Main(string[] args)
         {
-            var test = new MinstImporter();
+            var importer = new MinstImporter();
+            var rawData = importer.ImportData(
+                @"C:\Users\flori\Desktop\train-images-idx3-ubyte",
+                @"C:\Users\flori\Desktop\train-labels-idx1-ubyte");
 
-            var test2 = test.ImportData(@"C:\Users\flori\Desktop\train-images-idx3-ubyte",
-                @"C:\Users\flori\Desktop\train-labels-idx1-ubyte", 20);
-
-
+            System.Console.WriteLine(Directory.GetCurrentDirectory());
+            System.Console.ReadLine();
         }
     }
 }
