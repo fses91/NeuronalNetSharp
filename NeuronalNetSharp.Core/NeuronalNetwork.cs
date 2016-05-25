@@ -36,10 +36,13 @@ namespace NeuronalNetSharp.Core
 
         public List<Matrix<double>> HiddenLayers { get; }
 
+        /// <summary>
+        ///     Initialize Layers.
+        /// </summary>
         public void InitializeLayers()
         {
             for (var i = 0; i < AmountHiddenLayers; i++)
-                HiddenLayers.Add(DenseMatrix.OfArray(new double[SizeInputLayer, 1]));
+                HiddenLayers.Add(DenseMatrix.OfColumnArrays(new double[SizeInputLayer + 1]));
         }
 
         /// <summary>
@@ -52,25 +55,27 @@ namespace NeuronalNetSharp.Core
             var epsilon = Math.Sqrt(6)/Math.Sqrt(SizeInputLayer + SizeOutputLayer);
 
             for (var i = 0; i < AmountHiddenLayers; i++)
-                Weights.Add(DenseMatrix.CreateRandom(SizeInputLayer, SizeInputLayer + bias,
+                Weights.Add(DenseMatrix.CreateRandom(SizeInputLayer, SizeInputLayer + 1,
                     new ContinuousUniform(-epsilon, epsilon)));
 
-            Weights.Add(DenseMatrix.CreateRandom(SizeOutputLayer, SizeInputLayer + bias,
+            Weights.Add(DenseMatrix.CreateRandom(SizeOutputLayer, SizeInputLayer + 1,
                 new ContinuousUniform(-epsilon, epsilon)));
         }
 
         public Matrix<double> ComputeOutput(Matrix<double> input)
         {
-            var currentLayer = input;
+            // TODO Überlegen wie man bias term anders adden kann.
+            var currentLayer = DenseMatrix.Create(1, 1, 1).Append(input.Transpose()).Transpose();
 
             for (var i = 0; i < AmountHiddenLayers; i++)
             {
                 HiddenLayers[i] = Weights[i]*currentLayer;
                 HiddenLayers[i] = HiddenLayers[i].Map(SpecialFunctions.Logistic);
-                currentLayer = HiddenLayers[i];
+                currentLayer = DenseMatrix.Create(1, 1, 1).Append(HiddenLayers[i].Transpose()).Transpose();
             }
 
-            var output = Weights.Last()*HiddenLayers.Last();
+            var lastLayer = DenseMatrix.Create(1, 1, 1).Append(HiddenLayers.Last().Transpose()).Transpose();
+            var output = Weights.Last()*lastLayer;
             return output.Map(SpecialFunctions.Logistic);
         }
     }

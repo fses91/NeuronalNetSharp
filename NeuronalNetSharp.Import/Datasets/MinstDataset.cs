@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MathNet.Numerics.LinearAlgebra.Single;
+using MathNet.Numerics.LinearAlgebra.Double;
 using NeuronalNetSharp.Import.Interfaces;
 
 namespace NeuronalNetSharp.Import.Datasets
@@ -24,6 +24,6 @@ namespace NeuronalNetSharp.Import.Datasets
 
         public int Columns { get; }
 
-        public Matrix Data { get; }
+        public Matrix Data { get; set; }
     }
 }

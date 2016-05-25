@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MathNet.Numerics.LinearAlgebra.Single;
+using MathNet.Numerics.LinearAlgebra.Double;
 using NeuronalNetSharp.Import.Datasets;
 using NeuronalNetSharp.Import.Interfaces;
 
@@ -28,7 +28,7 @@ namespace NeuronalNetSharp.Import.Importer
                     var rows = BitConverter.ToInt32(brData.ReadBytes(4).Reverse().ToArray(), 0);
                     var columns = BitConverter.ToInt32(brData.ReadBytes(4).Reverse().ToArray(), 0);
                     var numPixels = rows*columns;
-                    var pixels = new float[numPixels];
+                    var pixels = new double[numPixels];
 
                     for (var di = 0; di < numImages; di++)
                     {

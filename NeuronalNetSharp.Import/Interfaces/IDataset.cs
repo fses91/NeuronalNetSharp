@@ -1,4 +1,4 @@
-﻿using MathNet.Numerics.LinearAlgebra.Single;
+﻿using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace NeuronalNetSharp.Import.Interfaces
 {

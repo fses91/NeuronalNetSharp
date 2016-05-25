@@ -53,13 +53,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\INeuronalNetwork.cs" />
     <Compile Include="LearningAlgorithms\BackpropagationLearningAlgorithm.cs" />
-    <Compile Include="LearningAlgorithms\ILearningAlgorithm.cs" />
+    <Compile Include="Interfaces\ILearningAlgorithm.cs" />
     <Compile Include="NeuronalNetwork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NeuronalNetSharp.Import\NeuronalNetSharp.Import.csproj">
+      <Project>{898cbdaf-4c32-4158-b840-54b358cd821a}</Project>
+      <Name>NeuronalNetSharp.Import</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
