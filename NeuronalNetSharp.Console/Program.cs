@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra.Double;
 using NeuronalNetSharp.Core;
+using NeuronalNetSharp.Core.LearningAlgorithms;
 using NeuronalNetSharp.Import.Importer;
 
 namespace NeuronalNetSharp.Console
@@ -20,6 +21,7 @@ namespace NeuronalNetSharp.Console
 
             var result = network.ComputeOutput(rawData[0].Data);
 
+            var backprob = new BackpropagationLearningAlgorithm(network, rawData);
 
             System.Console.WriteLine(Directory.GetCurrentDirectory());
             System.Console.ReadLine();

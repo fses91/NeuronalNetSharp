@@ -76,7 +76,8 @@ namespace NeuronalNetSharp.Core
 
             var lastLayer = DenseMatrix.Create(1, 1, 1).Append(HiddenLayers.Last().Transpose()).Transpose();
             var output = Weights.Last()*lastLayer;
-            return output.Map(SpecialFunctions.Logistic);
+
+            return output.Map(SpecialFunctions.Logistic).Map(d => d >= 0.5 ? 1.0 : 0);
         }
     }
 }
