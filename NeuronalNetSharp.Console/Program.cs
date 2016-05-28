@@ -17,11 +17,12 @@ namespace NeuronalNetSharp.Console
                 @"C:\Users\flori\Desktop\train-images-idx3-ubyte",
                 @"C:\Users\flori\Desktop\train-labels-idx1-ubyte").ToList();
             
-            var network = new NeuronalNetwork(784, 1, 10);
+            var network = new NeuronalNetwork(784, 1, 12);
 
             var result = network.ComputeOutput(rawData[0].Data);
 
             var backprob = new BackpropagationLearningAlgorithm(network, rawData);
+            backprob.ComputeCost();
 
             System.Console.WriteLine(Directory.GetCurrentDirectory());
             System.Console.ReadLine();

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
 using NeuronalNetSharp.Import.Interfaces;
 
@@ -13,19 +15,20 @@ namespace NeuronalNetSharp.Core.LearningAlgorithms
     // 
     public class BackpropagationLearningAlgorithm
     {
-        public BackpropagationLearningAlgorithm(NeuronalNetwork neuronalNetwork, List<IDataset> traningData)
+        public BackpropagationLearningAlgorithm(NeuronalNetwork neuronalNetwork, ICollection<IDataset> traningData)
         {
             NeuronalNetwork = neuronalNetwork;
             LabelMatrieMatrices = new Dictionary<string, Matrix>();
+            TrainingData = traningData;
 
 
-            // Initialize Label Matrix
+            // Initialize Label Matrices
             var distinctLabels = traningData.Select(x => x.Label).Distinct().ToList();
-            for (int i = 0; i < distinctLabels.Count; i++)
+            for (var i = 0; i < distinctLabels.Count; i++)
             {
                 var matrix = DenseMatrix.OfColumnArrays(new double[distinctLabels.Count()]);
                 matrix[i, 0] = 1;
-                LabelMatrieMatrices.Add(traningData[i].Label, matrix);
+                LabelMatrieMatrices.Add(distinctLabels[i], matrix);
             }
         }
 
@@ -33,7 +36,7 @@ namespace NeuronalNetSharp.Core.LearningAlgorithms
 
         public IEnumerable<IDataset> TrainingData { get; set; }
 
-        public Dictionary<string, Matrix> LabelMatrieMatrices { get; set; }
+        public IDictionary<string, Matrix> LabelMatrieMatrices { get; set; }
 
         public NeuronalNetwork TrainNetwork()
         {
@@ -41,15 +44,23 @@ namespace NeuronalNetSharp.Core.LearningAlgorithms
         }
 
 
-        //public double ComputeCost()
-        //{
-        //    foreach (var dataset in TrainingData)
-        //    {
-        //        var result = NeuronalNetwork.ComputeOutput(dataset.Data);
-        //    }
+        public double ComputeCost()
+        {
+            var cost = 0.0;
+            foreach (var dataset in TrainingData)
+            {
+                var result = NeuronalNetwork.ComputeOutput(dataset.Data);
+                var labelmatrix = LabelMatrieMatrices[dataset.Label];
+
+                var tmpCost = 
+                    (-labelmatrix.PointwiseMultiply(result.Map(Math.Log))) - 
+                    (1 - labelmatrix).PointwiseMultiply(result.Map(d => Math.Log(1 - d)));
+                cost = tmpCost.RowSums().Sum();
+            }
 
 
-        //}
+            return cost;
+        }
 
         #region MapIndexed
 
