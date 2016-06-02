@@ -22,12 +22,12 @@ namespace NeuronalNetSharp.Import.Importer
                     var brLabel = new BinaryReader(fsLabel);
 
                     // Shift position 4 bytes.
-                    brData.ReadBytes(4);
+                    var test = brData.ReadInt32();
 
-                    var numImages = BitConverter.ToInt32(brData.ReadBytes(4).Reverse().ToArray(), 0);
-                    var rows = BitConverter.ToInt32(brData.ReadBytes(4).Reverse().ToArray(), 0);
+                    var numImages = 6000;
+                    var rows = BitConverter.ToInt32(brData.ReadBytes(4), 0);
                     var columns = BitConverter.ToInt32(brData.ReadBytes(4).Reverse().ToArray(), 0);
-                    var numPixels = rows*columns;
+                    var numPixels = 784;
                     var pixels = new double[numPixels];
 
                     for (var di = 0; di < numImages; di++)

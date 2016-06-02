@@ -7,10 +7,16 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace NeuronalNetSharp.Core.Interfaces
 {
-    interface INeuronalNetwork
+    public interface INeuronalNetwork
     {
-        ICollection<Matrix<double>> Weights { get; }
+        int SizeInputLayer { get; }
 
-        ICollection<Matrix<double>> HiddenLayers { get; }
+        int SizeOutputLayer { get; }
+
+        List<Matrix<double>> Weights { get; }
+
+        List<Matrix<double>> HiddenLayers { get; }
+
+        Matrix<double> ComputeOutput(Matrix<double> input);
     }
 }
