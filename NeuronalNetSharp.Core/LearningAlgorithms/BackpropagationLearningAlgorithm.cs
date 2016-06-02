@@ -49,6 +49,8 @@ namespace NeuronalNetSharp.Core.LearningAlgorithms
                 var result = NeuronalNetwork.ComputeOutput(dataset.Data);
                 var labelmatrix = LabelMatrieMatrices[dataset.Label];
 
+                var test = -labelmatrix.PointwiseMultiply(result.Map(Math.Log));
+
                 var tmpCost =
                     -labelmatrix.PointwiseMultiply(result.Map(Math.Log)) -
                     (1 - labelmatrix).PointwiseMultiply(result.Map(d => Math.Log(1 - d)));

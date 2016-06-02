@@ -80,7 +80,8 @@ namespace NeuronalNetSharp.Core
                 currentLayer = HiddenLayers[i];
             }
 
-            return (Weights.Last()*HiddenLayers.Last()).Map(d => d >= 0.5 ? 1.0 : 0);
+            var outputLayer = Weights.Last()*HiddenLayers.Last();
+            return outputLayer.Map(SpecialFunctions.Logistic);
         }
     }
 }
