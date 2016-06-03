@@ -20,8 +20,10 @@ namespace NeuronalNetSharp.Console
             var network = new NeuronalNetwork(784, 3, 12);
 
             var result = network.ComputeOutput(rawData[0].Data);
+       
 
-            var backprob = new BackpropagationLearningAlgorithm(network, rawData);
+
+            var backprob = new BackpropagationLearningAlgorithm(network, rawData.Take(100).ToList());
             var test = backprob.ComputeCostRegularized(2);
 
             System.Console.WriteLine(Directory.GetCurrentDirectory());

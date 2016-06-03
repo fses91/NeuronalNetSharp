@@ -35,7 +35,7 @@ namespace NeuronalNetSharp.Core.LearningAlgorithms
 
         public IDictionary<string, Matrix> LabelMatrieMatrices { get; set; }
 
-        public INeuronalNetwork TrainNetwork()
+        public INeuronalNetwork TrainNetwork(int iterations)
         {
             throw new NotImplementedException();
         }
@@ -48,8 +48,6 @@ namespace NeuronalNetSharp.Core.LearningAlgorithms
             {
                 var result = NeuronalNetwork.ComputeOutput(dataset.Data);
                 var labelmatrix = LabelMatrieMatrices[dataset.Label];
-
-                var test = -labelmatrix.PointwiseMultiply(result.Map(Math.Log));
 
                 var tmpCost =
                     -labelmatrix.PointwiseMultiply(result.Map(Math.Log)) -

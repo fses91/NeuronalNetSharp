@@ -24,9 +24,9 @@ namespace NeuronalNetSharp.Import.Importer
                     // Shift position 4 bytes.
                     var test = brData.ReadInt32();
 
-                    var numImages = 6000;
-                    var rows = BitConverter.ToInt32(brData.ReadBytes(4), 0);
-                    var columns = BitConverter.ToInt32(brData.ReadBytes(4).Reverse().ToArray(), 0);
+                    const int numImages = 6000;
+                    const int rows = 28;
+                    const int columns = 28;
                     var numPixels = 784;
                     var pixels = new double[numPixels];
 
