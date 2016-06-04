@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using MathNet.Numerics.LinearAlgebra.Double;
-using NeuronalNetSharp.Import.Datasets;
-using NeuronalNetSharp.Import.Interfaces;
-
-namespace NeuronalNetSharp.Import.Importer
+﻿namespace NeuronalNetSharp.Import
 {
-    public class MinstImporter : IImportData
+    using System.Collections.Generic;
+    using System.IO;
+    using MathNet.Numerics.LinearAlgebra.Double;
+
+    public class MinstImporter
     {
         public ICollection<IDataset> ImportData(string dataFile, string labelFile)
         {

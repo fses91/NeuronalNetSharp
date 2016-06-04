@@ -3,35 +3,59 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Import.Interfaces;
+    using Import;
     using Interfaces;
     using MathNet.Numerics;
+    using MathNet.Numerics.LinearAlgebra;
     using MathNet.Numerics.LinearAlgebra.Double;
 
     public class BackpropagationLearningAlgorithm
     {
-        public BackpropagationLearningAlgorithm(INeuronalNetwork neuronalNetwork, ICollection<IDataset> traningData)
+        public BackpropagationLearningAlgorithm(INeuronalNetwork network, IEnumerable<IDataset> traningData)
         {
-            NeuronalNetwork = neuronalNetwork;
-            LabelMatrieMatrices = new Dictionary<string, Matrix>();
+            Network = network;
+            LabelMatrices = new Dictionary<string, Matrix>();
             TrainingData = traningData;
 
             InitilizeLabelMatrices();
         }
 
-        public IDictionary<string, Matrix> LabelMatrieMatrices { get; set; }
+        public IDictionary<string, Matrix> LabelMatrices { get; set; }
 
-        public INeuronalNetwork NeuronalNetwork { get; set; }
+        public INeuronalNetwork Network { get; set; }
 
         public IEnumerable<IDataset> TrainingData { get; set; }
 
         public INeuronalNetwork TrainNetwork(int iterations)
         {
+            IList<Matrix<double>> deltaVectors = new List<Matrix<double>>();
             foreach (var dataset in TrainingData)
             {
-                NeuronalNetwork.ComputeOutput(dataset.Data);
+                var output = Network.ComputeOutput(dataset.Data);
+                var deltaLast = output - LabelMatrices[dataset.Label];
+                deltaVectors.Add(deltaLast);
 
 
+                // Beispielimplementierung für 1 Layer, TODO umsetzten auf n - Layer.
+                var tmp1 = Network.Weights[1].Transpose()*deltaLast;
+                var tmp2 = Network.HiddenLayers[0].Map(d => d*(1 - 1));
+                var delta2 = tmp1.PointwiseMultiply(tmp2);
+
+
+                //for (var i = Network.Weights.Count - 2; i >= 0; i++)
+                //{
+                //    var test = Network.Weights[i + 1].Transpose()*deltaVectors.Last();
+                //    var test2 = Network.HiddenLayers[i].Map(d => d*(1 - d));
+
+
+                //    deltaVectors.Add((Network.Weights[i + 1].Transpose() * deltaVectors.Last()).PointwiseMultiply(Network.HiddenLayers[i].Map(d => d*(1 - d))));
+                //}
+
+
+                foreach (var layer in Network.HiddenLayers.Reverse())
+                {
+                    deltaVectors.Add(layer.Transpose() * deltaVectors.Last());
+                }
             }
 
             
@@ -46,8 +70,8 @@
             var cost = 0.0;
             foreach (var dataset in TrainingData)
             {
-                var result = NeuronalNetwork.ComputeOutput(dataset.Data);
-                var labelmatrix = LabelMatrieMatrices[dataset.Label];
+                var result = Network.ComputeOutput(dataset.Data);
+                var labelmatrix = LabelMatrices[dataset.Label];
 
                 var tmpCost =
                     -labelmatrix.PointwiseMultiply(result.Map(Math.Log)) -
@@ -57,7 +81,7 @@
 
             // Calculate regularization term.
             var reg = 0.0;
-            foreach (var weightVector in NeuronalNetwork.Weights)
+            foreach (var weightVector in Network.Weights)
             {
                 reg +=
                     weightVector.SubMatrix(0, weightVector.RowCount, 1, weightVector.ColumnCount - 1)
@@ -79,13 +103,8 @@
             {
                 var matrix = DenseMatrix.OfColumnArrays(new double[distinctLabels.Count()]);
                 matrix[i, 0] = 1;
-                LabelMatrieMatrices.Add(distinctLabels[i], matrix);
+                LabelMatrices.Add(distinctLabels[i], matrix);
             }
-        }
-
-        public double SigmoidGradient(double x)
-        {
-            return SpecialFunctions.Logistic(x)*(1 - SpecialFunctions.Logistic(x));
         }
 
         #region MapIndexed

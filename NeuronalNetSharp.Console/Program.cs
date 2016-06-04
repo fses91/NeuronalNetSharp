@@ -1,34 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using MathNet.Numerics.LinearAlgebra.Double;
-using NeuronalNetSharp.Core;
-using NeuronalNetSharp.Core.LearningAlgorithms;
-using NeuronalNetSharp.Import.Importer;
-
-namespace NeuronalNetSharp.Console
+﻿namespace NeuronalNetSharp.Console
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using Core;
+    using Core.LearningAlgorithms;
+    using Import;
+
     internal class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
-            var tmp = Directory.GetCurrentDirectory();
             var importer = new MinstImporter();
             var rawData = importer.ImportData(@"train-images-idx3-ubyte",
                 @"train-labels-idx1-ubyte").ToList();
-            
-            var network = new NeuronalNetwork(784, 3, 12);
 
-            var result = network.ComputeOutput(rawData[0].Data);
-       
-
-
+            var network = new NeuronalNetwork(784, 1, 10);
             var backprob = new BackpropagationLearningAlgorithm(network, rawData.Take(100).ToList());
-            var test = backprob.ComputeCostRegularized(2);
 
-            System.Console.WriteLine(Directory.GetCurrentDirectory());
-            System.Console.ReadLine();
+            var test = backprob.TrainNetwork(10);
+
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            Console.ReadLine();
         }
     }
 }

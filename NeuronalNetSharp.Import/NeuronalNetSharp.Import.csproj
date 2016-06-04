@@ -53,10 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Datasets\MinstDataset.cs" />
-    <Compile Include="Interfaces\IDataset.cs" />
-    <Compile Include="Interfaces\IImportData.cs" />
-    <Compile Include="Importer\MinstImporter.cs" />
+    <Compile Include="MinstDataset.cs" />
+    <Compile Include="IDataset.cs" />
+    <Compile Include="MinstImporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
