@@ -2,6 +2,6 @@
 {
     interface ILearningAlgorithm
     {
-        NeuronalNetwork TrainNetwork(NeuronalNetwork neuronalNetwork);
+        INeuronalNetwork TrainNetwork(int iterations);
     }
 }

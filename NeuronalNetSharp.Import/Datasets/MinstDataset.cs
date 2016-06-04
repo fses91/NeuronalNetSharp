@@ -14,15 +14,15 @@ namespace NeuronalNetSharp.Import.Datasets
         {
             Data = data;
             Label = label;
-            Rows = rows;
-            Columns = columns;
+            NumberOfRows = rows;
+            NumberOfColumns = columns;
         }
 
         public string Label { get; }
 
-        public int Rows { get; }
+        public int NumberOfRows { get; }
 
-        public int Columns { get; }
+        public int NumberOfColumns { get; }
 
         public Matrix Data { get; set; }
     }

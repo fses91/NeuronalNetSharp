@@ -13,9 +13,10 @@ namespace NeuronalNetSharp.Console
     {
         private static void Main(string[] args)
         {
+            var tmp = Directory.GetCurrentDirectory();
             var importer = new MinstImporter();
-            var rawData = importer.ImportData(@"C:\Users\flori\Desktop\train-images-idx3-ubyte",
-                @"C:\Users\flori\Desktop\train-labels-idx1-ubyte").ToList();
+            var rawData = importer.ImportData(@"train-images-idx3-ubyte",
+                @"train-labels-idx1-ubyte").ToList();
             
             var network = new NeuronalNetwork(784, 3, 12);
 

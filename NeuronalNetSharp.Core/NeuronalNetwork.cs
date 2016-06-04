@@ -17,7 +17,7 @@ namespace NeuronalNetSharp.Core
             SizeInputLayer = sizeInputLayer;
             SizeOutputLayer = sizeOutputLayer;
 
-            AmountHiddenLayers = amountHiddenLayers;
+            NumberOfHiddenLayers = amountHiddenLayers;
             HiddenLayers = new List<Matrix<double>>();
 
             Weights = new List<Matrix<double>>();
@@ -32,18 +32,18 @@ namespace NeuronalNetSharp.Core
 
         public int SizeOutputLayer { get; }
 
-        public int AmountHiddenLayers { get; }
+        public int NumberOfHiddenLayers { get; }
 
-        public List<Matrix<double>> Weights { get; }
+        public IList<Matrix<double>> Weights { get; }
 
-        public List<Matrix<double>> HiddenLayers { get; }
+        public IList<Matrix<double>> HiddenLayers { get; }
 
         /// <summary>
         ///     Initialize Layers.
         /// </summary>
         public void InitializeLayers()
         {
-            for (var i = 0; i < AmountHiddenLayers; i++)
+            for (var i = 0; i < NumberOfHiddenLayers; i++)
             {
                 var matrix = DenseMatrix.OfColumnArrays(new double[SizeInputLayer + 1]);
                 matrix[0, 0] = 1;
@@ -59,7 +59,7 @@ namespace NeuronalNetSharp.Core
             // TODO überarbeiten, Überlegung wegen Weight initialisierung welchen Wert für Epsilon.
             var epsilon = Math.Sqrt(6)/Math.Sqrt(SizeInputLayer + SizeOutputLayer);
 
-            for (var i = 0; i < AmountHiddenLayers; i++)
+            for (var i = 0; i < NumberOfHiddenLayers; i++)
                 Weights.Add(DenseMatrix.CreateRandom(SizeInputLayer, SizeInputLayer + 1,
                     new ContinuousUniform(-epsilon, epsilon)));
 
@@ -77,6 +77,7 @@ namespace NeuronalNetSharp.Core
                 HiddenLayers[i].SetSubMatrix(1, 0,
                     HiddenLayers[i].SubMatrix(1, HiddenLayers[i].RowCount - 1, 0, HiddenLayers[i].ColumnCount)
                         .Map(SpecialFunctions.Logistic));
+
                 currentLayer = HiddenLayers[i];
             }
 

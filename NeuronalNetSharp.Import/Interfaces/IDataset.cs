@@ -14,14 +14,14 @@ namespace NeuronalNetSharp.Import.Interfaces
         string Label { get; }
 
         /// <summary>
-        /// The amount of rows of the input data. 
+        /// The number of rows of the input data. 
         /// </summary>
-        int Rows { get; }
+        int NumberOfRows { get; }
 
         /// <summary>
-        /// The amount of columns of the input data.
+        /// The number of columns of the input data.
         /// </summary>
-        int Columns { get; }
+        int NumberOfColumns { get; }
 
         /// <summary>
         /// The data.

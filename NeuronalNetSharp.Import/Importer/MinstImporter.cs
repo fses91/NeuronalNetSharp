@@ -21,10 +21,10 @@ namespace NeuronalNetSharp.Import.Importer
                     var brData = new BinaryReader(fsData);
                     var brLabel = new BinaryReader(fsLabel);
 
-                    // Shift position 4 bytes.
-                    var test = brData.ReadInt32();
+                    brData.ReadBytes(16);
+                    brLabel.ReadBytes(8);
 
-                    const int numImages = 6000;
+                    const int numImages = 60000;
                     const int rows = 28;
                     const int columns = 28;
                     var numPixels = 784;

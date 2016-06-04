@@ -13,9 +13,9 @@ namespace NeuronalNetSharp.Core.Interfaces
 
         int SizeOutputLayer { get; }
 
-        List<Matrix<double>> Weights { get; }
+        IList<Matrix<double>> Weights { get; }
 
-        List<Matrix<double>> HiddenLayers { get; }
+        IList<Matrix<double>> HiddenLayers { get; }
 
         Matrix<double> ComputeOutput(Matrix<double> input);
     }
