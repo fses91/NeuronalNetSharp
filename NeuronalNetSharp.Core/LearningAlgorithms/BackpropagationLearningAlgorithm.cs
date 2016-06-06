@@ -28,11 +28,11 @@
 
         public INeuronalNetwork TrainNetwork(int iterations)
         {
-            var deltaVectors = InitilizeDeltaMatrices();
-            var tmpDeltaVectors = new List<Matrix<double>>();
-
+            var deltaMatrices = InitilizeDeltaMatrices();
+            
             foreach (var dataset in TrainingData)
             {
+                var tmpDeltaVectors = new List<Matrix<double>>();
                 var output = Network.ComputeOutput(dataset.Data);
                 var deltaLast = output - LabelMatrices[dataset.Label];
                 tmpDeltaVectors.Add(deltaLast);
@@ -47,10 +47,13 @@
                 }
 
                 tmpDeltaVectors.Reverse();
-                deltaVectors[0] = deltaVectors[0] + tmpDeltaVectors[0] * DenseMatrix.Create(1, 1, 1).Append(dataset.Data.Transpose());
-                for (var i = 1; i < deltaVectors.Count; i++)
-                    deltaVectors[i] = deltaVectors[i] + tmpDeltaVectors[i] * Network.HiddenLayers[i - 1].Transpose();
+                deltaMatrices[0] = deltaMatrices[0] + tmpDeltaVectors[0] * DenseMatrix.Create(1, 1, 1).Append(dataset.Data.Transpose());
+                for (var i = 1; i < deltaMatrices.Count; i++)
+                    deltaMatrices[i] = deltaMatrices[i] + tmpDeltaVectors[i] * Network.HiddenLayers[i - 1].Transpose();
             }
+
+            foreach (var matrix in deltaMatrices)
+                matrix.Map(d => d/TrainingData.Count());
 
 
             throw new NotImplementedException();
