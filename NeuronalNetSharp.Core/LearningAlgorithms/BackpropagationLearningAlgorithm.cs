@@ -47,20 +47,9 @@
                 }
 
                 tmpDeltaVectors.Reverse();
-
-
-                // TODO Umlegen auf Schleife.
                 deltaVectors[0] = deltaVectors[0] + tmpDeltaVectors[0] * DenseMatrix.Create(1, 1, 1).Append(dataset.Data.Transpose());
-                deltaVectors[1] = deltaVectors[1] + tmpDeltaVectors[1]*Network.HiddenLayers[0].Transpose();
-
-
-
-                for (var i = 0; i < deltaVectors.Count - 1; i++)
-                {
-                    deltaVectors[i] = deltaVectors[i] + tmpDeltaVectors[i] * Network.HiddenLayers[i].Transpose();
-                }
-                var last = deltaVectors.Last();
-                last = last + tmpDeltaVectors.Last()*output.Transpose();
+                for (var i = 1; i < deltaVectors.Count; i++)
+                    deltaVectors[i] = deltaVectors[i] + tmpDeltaVectors[i] * Network.HiddenLayers[i - 1].Transpose();
             }
 
 
