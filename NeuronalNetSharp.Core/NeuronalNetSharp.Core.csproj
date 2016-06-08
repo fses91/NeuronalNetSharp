@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
     <Compile Include="Interfaces\INeuronalNetwork.cs" />
     <Compile Include="LearningAlgorithms\BackpropagationLearningAlgorithm.cs" />
     <Compile Include="Interfaces\ILearningAlgorithm.cs" />

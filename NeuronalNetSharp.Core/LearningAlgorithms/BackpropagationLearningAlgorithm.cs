@@ -26,69 +26,107 @@
 
         public IEnumerable<IDataset> TrainingData { get; set; }
 
-        public INeuronalNetwork TrainNetwork(int iterations)
+        public INeuronalNetwork TrainNetwork(int iterations, double alpha, double lambda)
         {
             var deltaMatrices = InitilizeDeltaMatrices();
-            
-            foreach (var dataset in TrainingData)
+
+            for (var i = 0; i < iterations; i++)
             {
-                var tmpDeltaVectors = new List<Matrix<double>>();
-                var output = Network.ComputeOutput(dataset.Data);
-                var deltaLast = output - LabelMatrices[dataset.Label];
-                tmpDeltaVectors.Add(deltaLast);
-
-                for (var i = Network.Weights.Count - 1; i >= 1; i--)
+                foreach (var dataset in TrainingData)
                 {
-                    var tmp1 = Network.Weights[i].Transpose() * tmpDeltaVectors.Last();
-                    var tmp2 = Network.HiddenLayers[i - 1].Map(d => d * (1 - d));
-                    var delta = tmp1.PointwiseMultiply(tmp2);
+                    var tmpDeltaVectors = new List<Matrix<double>>();
+                    var output = Network.ComputeOutput(dataset.Data);
+                    var deltaLast = output - LabelMatrices[dataset.Label];
+                    tmpDeltaVectors.Add(deltaLast);
 
-                    tmpDeltaVectors.Add(delta.SubMatrix(1, delta.RowCount - 1, 0, delta.ColumnCount));
+                    for (var j = Network.Weights.Count - 1; j >= 1; j--)
+                    {
+                        var tmp1 = Network.Weights[j].Transpose() * tmpDeltaVectors.Last();
+                        var tmp2 = Network.HiddenLayers[j - 1].Map(d => d * (1 - d));
+                        var delta = tmp1.PointwiseMultiply(tmp2);
+
+                        tmpDeltaVectors.Add(delta.SubMatrix(1, delta.RowCount - 1, 0, delta.ColumnCount));
+                    }
+
+                    tmpDeltaVectors.Reverse();
+                    deltaMatrices[0] = deltaMatrices[0] + tmpDeltaVectors[0] * DenseMatrix.Create(1, 1, 1).Append(dataset.Data.Transpose());
+                    for (var j = 1; j < deltaMatrices.Count; j++)
+                        deltaMatrices[j] = deltaMatrices[j] + tmpDeltaVectors[j] * Network.HiddenLayers[j - 1].Transpose();
                 }
 
-                tmpDeltaVectors.Reverse();
-                deltaMatrices[0] = deltaMatrices[0] + tmpDeltaVectors[0] * DenseMatrix.Create(1, 1, 1).Append(dataset.Data.Transpose());
-                for (var i = 1; i < deltaMatrices.Count; i++)
-                    deltaMatrices[i] = deltaMatrices[i] + tmpDeltaVectors[i] * Network.HiddenLayers[i - 1].Transpose();
+                for (var j = 0; j < TrainingData.Count(); j++)
+                {
+                    deltaMatrices[j] = deltaMatrices[j].Map(d => d / TrainingData.Count());
+                    Network.Weights[j] = Network.Weights[j] - alpha * deltaMatrices[j];
+                }
+
+                Console.WriteLine(ComputeCost());
             }
 
-            foreach (var matrix in deltaMatrices)
-                matrix.Map(d => d/TrainingData.Count());
-
-
-            throw new NotImplementedException();
+            return Network;
         }
 
-        public double ComputeCostRegularized(double lambda)
+        public double ComputeCost()
         {
-            // Calculate cost.
-            var cost = 0.0;
+            //var difference = (output - targetOutput).NormalizeRows(2.0);
+            //difference = difference.Map(d => 1.0/2.0 * Math.Pow(d, 2));
+            //var cost = 1.0/TrainingData.Count() * difference.ColumnSums().Sum();
+            var result = 0.0;
+
             foreach (var dataset in TrainingData)
             {
-                var result = Network.ComputeOutput(dataset.Data);
-                var labelmatrix = LabelMatrices[dataset.Label];
-
-                var tmpCost =
-                    -labelmatrix.PointwiseMultiply(result.Map(Math.Log)) -
-                    (1 - labelmatrix).PointwiseMultiply(result.Map(d => Math.Log(1 - d)));
-                cost = tmpCost.RowSums().Sum();
+                var difference = Network.ComputeOutput(dataset.Data) - LabelMatrices[dataset.Label];
+                var norm = difference.CalculateNorm();
+                result += 1.0/2.0 * Math.Pow(norm, 2);
             }
+
+
 
             // Calculate regularization term.
-            var reg = 0.0;
-            foreach (var weightVector in Network.Weights)
-            {
-                reg +=
-                    weightVector.SubMatrix(0, weightVector.RowCount, 1, weightVector.ColumnCount - 1)
-                        .Map(d => Math.Pow(d, 2))
-                        .ColumnSums()
-                        .Sum();
-            }
+            //var reg = 0.0;
+            //foreach (var weightVector in Network.Weights)
+            //{
+            //    reg += weightVector.SubMatrix(0, weightVector.RowCount, 1, weightVector.ColumnCount - 1)
+            //            .Map(d => Math.Pow(d, 2))
+            //            .ColumnSums()
+            //            .Sum();
+            //}
 
-            reg = reg*(lambda/(2*TrainingData.Count()));
+            //reg = lambda / 2 * reg;
 
-            return cost + reg;
+            return result/TrainingData.Count();
         }
+
+        //public double ComputeCostRegularized(double lambda)
+        //{
+        //    // Calculate cost.
+        //    var cost = 0.0;
+        //    foreach (var dataset in TrainingData)
+        //    {
+        //        var result = Network.ComputeOutput(dataset.Data);
+        //        var labelmatrix = LabelMatrices[dataset.Label];
+
+        //        var tmpCost =
+        //            -labelmatrix.PointwiseMultiply(result.Map(Math.Log)) -
+        //            (1 - labelmatrix).PointwiseMultiply(result.Map(d => Math.Log(1 - d)));
+        //        cost = tmpCost.RowSums().Sum();
+        //    }
+
+        //    // Calculate regularization term.
+        //    var reg = 0.0;
+        //    foreach (var weightVector in Network.Weights)
+        //    {
+        //        reg +=
+        //            weightVector.SubMatrix(0, weightVector.RowCount, 1, weightVector.ColumnCount - 1)
+        //                .Map(d => Math.Pow(d, 2))
+        //                .ColumnSums()
+        //                .Sum();
+        //    }
+
+        //    reg = reg*(lambda/(2*TrainingData.Count()));
+
+        //    return cost + reg;
+        //}
 
         private void InitilizeLabelMatrices()
         {
