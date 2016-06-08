@@ -4,6 +4,8 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Import;
     using Interfaces;
     using MathNet.Numerics.LinearAlgebra;
@@ -29,7 +31,6 @@
         public INeuronalNetwork TrainNetwork(int iterations, double alpha, double lambda)
         {
             var deltaMatrices = InitilizeDeltaMatrices();
-
             for (var i = 0; i < iterations; i++)
             {
                 foreach (var dataset in TrainingData)
@@ -54,13 +55,14 @@
                         deltaMatrices[j] = deltaMatrices[j] + tmpDeltaVectors[j] * Network.HiddenLayers[j - 1].Transpose();
                 }
 
-                for (var j = 0; j < TrainingData.Count(); j++)
+                for (var j = 0; j < deltaMatrices.Count; j++)
                 {
                     deltaMatrices[j] = deltaMatrices[j].Map(d => d / TrainingData.Count());
                     Network.Weights[j] = Network.Weights[j] - alpha * deltaMatrices[j];
+                    //Network.Weights[j].SetSubMatrix(0, 1, Network.Weights[j].SubMatrix(0, Network.Weights[j].RowCount, 1, Network.Weights[j].ColumnCount - 1).Map(d => lambda * d));
                 }
 
-                Console.WriteLine(ComputeCost());
+                Console.WriteLine("RegCost:" + ComputeCostRegularized(lambda));
             }
 
             return Network;
@@ -68,11 +70,8 @@
 
         public double ComputeCost()
         {
-            //var difference = (output - targetOutput).NormalizeRows(2.0);
-            //difference = difference.Map(d => 1.0/2.0 * Math.Pow(d, 2));
-            //var cost = 1.0/TrainingData.Count() * difference.ColumnSums().Sum();
+            // Cost
             var result = 0.0;
-
             foreach (var dataset in TrainingData)
             {
                 var difference = Network.ComputeOutput(dataset.Data) - LabelMatrices[dataset.Label];
@@ -80,21 +79,25 @@
                 result += 1.0/2.0 * Math.Pow(norm, 2);
             }
 
+            return result / TrainingData.Count();
+        }
 
+        public double ComputeCostRegularized(double lambda)
+        {
+            var cost = ComputeCost();
+            var reg = 0.0;
 
-            // Calculate regularization term.
-            //var reg = 0.0;
-            //foreach (var weightVector in Network.Weights)
-            //{
-            //    reg += weightVector.SubMatrix(0, weightVector.RowCount, 1, weightVector.ColumnCount - 1)
-            //            .Map(d => Math.Pow(d, 2))
-            //            .ColumnSums()
-            //            .Sum();
-            //}
+            foreach (var weightVector in Network.Weights)
+            {
+                reg += weightVector.SubMatrix(0, weightVector.RowCount, 1, weightVector.ColumnCount - 1)
+                        .Map(d => Math.Pow(d, 2))
+                        .ColumnSums()
+                        .Sum();
+            }
 
-            //reg = lambda / 2 * reg;
+            reg = lambda/2*reg;
 
-            return result/TrainingData.Count();
+            return reg + cost;
         }
 
         //public double ComputeCostRegularized(double lambda)
