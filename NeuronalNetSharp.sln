@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.Test", "Ne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.Import", "NeuronalNetSharp.Import\NeuronalNetSharp.Import.csproj", "{898CBDAF-4C32-4158-B840-54B358CD821A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.WPF", "NeuronalNetSharp.WPF\NeuronalNetSharp.WPF.csproj", "{0AB071F4-02EA-4856-B14E-CB614BC7C00C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{898CBDAF-4C32-4158-B840-54B358CD821A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{898CBDAF-4C32-4158-B840-54B358CD821A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{898CBDAF-4C32-4158-B840-54B358CD821A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AB071F4-02EA-4856-B14E-CB614BC7C00C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AB071F4-02EA-4856-B14E-CB614BC7C00C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AB071F4-02EA-4856-B14E-CB614BC7C00C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AB071F4-02EA-4856-B14E-CB614BC7C00C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
