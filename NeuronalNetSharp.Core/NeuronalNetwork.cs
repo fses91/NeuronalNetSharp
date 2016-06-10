@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using MathNet.Numerics;
-using MathNet.Numerics.Distributions;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
-using NeuronalNetSharp.Core.Interfaces;
-
-namespace NeuronalNetSharp.Core
+﻿namespace NeuronalNetSharp.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.Serialization;
+    using Interfaces;
+    using MathNet.Numerics;
+    using MathNet.Numerics.Distributions;
+    using MathNet.Numerics.LinearAlgebra;
+    using MathNet.Numerics.LinearAlgebra.Double;
+
     public class NeuronalNetwork : INeuronalNetwork
     {
         public NeuronalNetwork(int sizeInputLayer, int amountHiddenLayers, int sizeOutputLayer)
@@ -26,17 +26,33 @@ namespace NeuronalNetSharp.Core
             InitializeLayers();
         }
 
-        public bool Bias { get; set; }
+        public int NumberOfHiddenLayers { get; }
+
+        public Matrix<double> ComputeOutput(Matrix<double> input)
+        {
+            var currentLayer = DenseMatrix.Create(1, 1, 1).Append(input.Transpose()).Transpose();
+
+            for (var i = 0; i < HiddenLayers.Count; i++)
+            {
+                HiddenLayers[i].SetSubMatrix(1, 0, Weights[i]*currentLayer);
+                HiddenLayers[i].SetSubMatrix(1, 0,
+                    HiddenLayers[i].SubMatrix(1, HiddenLayers[i].RowCount - 1, 0, HiddenLayers[i].ColumnCount)
+                        .Map(SpecialFunctions.Logistic));
+
+                currentLayer = HiddenLayers[i];
+            }
+
+            var outputLayer = Weights.Last()*HiddenLayers.Last();
+            return outputLayer.Map(SpecialFunctions.Logistic);
+        }
+
+        public IList<Matrix<double>> HiddenLayers { get; }
 
         public int SizeInputLayer { get; }
 
         public int SizeOutputLayer { get; }
 
-        public int NumberOfHiddenLayers { get; }
-
         public IList<Matrix<double>> Weights { get; }
-
-        public IList<Matrix<double>> HiddenLayers { get; }
 
         /// <summary>
         ///     Initialize Layers.
@@ -65,24 +81,6 @@ namespace NeuronalNetSharp.Core
 
             Weights.Add(DenseMatrix.CreateRandom(SizeOutputLayer, SizeInputLayer + 1,
                 new ContinuousUniform(-epsilon, epsilon)));
-        }
-
-        public Matrix<double> ComputeOutput(Matrix<double> input)
-        {
-            var currentLayer = DenseMatrix.Create(1, 1, 1).Append(input.Transpose()).Transpose();
-
-            for (var i = 0; i < HiddenLayers.Count; i++)
-            {
-                HiddenLayers[i].SetSubMatrix(1, 0, Weights[i]*currentLayer);
-                HiddenLayers[i].SetSubMatrix(1, 0,
-                    HiddenLayers[i].SubMatrix(1, HiddenLayers[i].RowCount - 1, 0, HiddenLayers[i].ColumnCount)
-                        .Map(SpecialFunctions.Logistic));
-
-                currentLayer = HiddenLayers[i];
-            }
-
-            var outputLayer = Weights.Last()*HiddenLayers.Last();
-            return outputLayer.Map(SpecialFunctions.Logistic);
         }
     }
 }

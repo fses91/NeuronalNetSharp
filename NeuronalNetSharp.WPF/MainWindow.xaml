@@ -3,13 +3,30 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         xmlns:local="clr-namespace:NeuronalNetSharp.WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+    
+    <Window.DataContext>
+        <local:MainViewModel/>
+    </Window.DataContext>
     <Grid>
-        <StackPanel>
-            <Button Name="Hans" Width="auto" Height="auto">Drück mich.</Button>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         
+        
+        
+        <StackPanel Grid.Column="0" Grid.Row="1">
+            <Button Name="LoadTrainingData" Click="LoadTrainingData_Click">Load Training Data</Button>
+            <Button Name="LoadTestData" Click="LoadTestData_OnClick">Load Test Data</Button>
+            <Button Name="LoadNetwork" Click="LoadNetwork_OnClick"></Button>
+        </StackPanel>
     </Grid>
 </Window>

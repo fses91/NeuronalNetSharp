@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using Core;
@@ -27,10 +28,15 @@
                 @"train-labels-idx1-ubyte").ToList();
 
             var network = new NeuronalNetwork(784, 1, 10);
-            var backprob = new BackpropagationLearningAlgorithm(network, rawData.Take(500));
+            var backprob = new BackpropagationLearningAlgorithm(network, rawData.Take(100));
 
-            var test = backprob.TrainNetwork(100, 0.01, 0.0001);
 
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var test = backprob.TrainNetwork(100, 0.01, 0);
+            stopwatch.Stop();
+            Console.WriteLine(stopwatch.Elapsed);
 
 
 

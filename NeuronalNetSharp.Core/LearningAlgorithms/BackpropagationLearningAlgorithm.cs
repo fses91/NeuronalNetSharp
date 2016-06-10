@@ -1,10 +1,8 @@
 ﻿namespace NeuronalNetSharp.Core.LearningAlgorithms
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
     using Import;
     using Interfaces;
@@ -42,30 +40,43 @@
 
                     for (var j = Network.Weights.Count - 1; j >= 1; j--)
                     {
-                        var tmp1 = Network.Weights[j].Transpose() * tmpDeltaVectors.Last();
-                        var tmp2 = Network.HiddenLayers[j - 1].Map(d => d * (1 - d));
+                        var tmp1 = Network.Weights[j].Transpose()*tmpDeltaVectors.Last();
+                        var tmp2 = Network.HiddenLayers[j - 1].Map(d => d*(1 - d));
                         var delta = tmp1.PointwiseMultiply(tmp2);
 
                         tmpDeltaVectors.Add(delta.SubMatrix(1, delta.RowCount - 1, 0, delta.ColumnCount));
                     }
 
                     tmpDeltaVectors.Reverse();
-                    deltaMatrices[0] = deltaMatrices[0] + tmpDeltaVectors[0] * DenseMatrix.Create(1, 1, 1).Append(dataset.Data.Transpose());
+                    deltaMatrices[0] = deltaMatrices[0] +
+                                       tmpDeltaVectors[0]*DenseMatrix.Create(1, 1, 1).Append(dataset.Data.Transpose());
                     for (var j = 1; j < deltaMatrices.Count; j++)
-                        deltaMatrices[j] = deltaMatrices[j] + tmpDeltaVectors[j] * Network.HiddenLayers[j - 1].Transpose();
+                        deltaMatrices[j] = deltaMatrices[j] + tmpDeltaVectors[j]*Network.HiddenLayers[j - 1].Transpose();
                 }
 
                 // Update weights.
-                for (var j = 0; j < deltaMatrices.Count; j++)
+                Parallel.For(0, deltaMatrices.Count, j =>
                 {
-                    deltaMatrices[j] = deltaMatrices[j].Map(d => d / TrainingData.Count());
-                    Network.Weights[j] = Network.Weights[j] - alpha * deltaMatrices[j];
+                    deltaMatrices[j] = deltaMatrices[j].Map(d => d/TrainingData.Count());
+                    Network.Weights[j] = Network.Weights[j] - alpha*deltaMatrices[j];
                     var subDelta = deltaMatrices[j].SubMatrix(0, Network.Weights[j].RowCount, 1,
-                        Network.Weights[j].ColumnCount - 1).Map(d => lambda / TrainingData.Count() * d);
+                        Network.Weights[j].ColumnCount - 1).Map(d => lambda/TrainingData.Count()*d);
                     var subWeights = Network.Weights[j].SubMatrix(0, Network.Weights[j].RowCount, 1,
                         Network.Weights[j].ColumnCount - 1);
-                    Network.Weights[j].SetSubMatrix(0, Network.Weights[j].RowCount, 1, Network.Weights[j].ColumnCount - 1, subWeights + subDelta);
-                }
+                    Network.Weights[j].SetSubMatrix(0, Network.Weights[j].RowCount, 1,
+                        Network.Weights[j].ColumnCount - 1, subWeights + subDelta);
+                });
+
+                //for (var j = 0; j < deltaMatrices.Count; j++)
+                //{
+                //    deltaMatrices[j] = deltaMatrices[j].Map(d => d / TrainingData.Count());
+                //    Network.Weights[j] = Network.Weights[j] - alpha * deltaMatrices[j];
+                //    var subDelta = deltaMatrices[j].SubMatrix(0, Network.Weights[j].RowCount, 1,
+                //        Network.Weights[j].ColumnCount - 1).Map(d => lambda / TrainingData.Count() * d);
+                //    var subWeights = Network.Weights[j].SubMatrix(0, Network.Weights[j].RowCount, 1,
+                //        Network.Weights[j].ColumnCount - 1);
+                //    Network.Weights[j].SetSubMatrix(0, Network.Weights[j].RowCount, 1, Network.Weights[j].ColumnCount - 1, subWeights + subDelta);
+                //}
 
                 Console.WriteLine("RegCost:" + ComputeCostRegularized(lambda));
             }
@@ -81,29 +92,11 @@
             {
                 var difference = Network.ComputeOutput(dataset.Data) - LabelMatrices[dataset.Label];
                 var norm = difference.CalculateNorm();
-                result += 1.0/2.0 * Math.Pow(norm, 2);
+                result += 1.0/2.0*Math.Pow(norm, 2);
             }
 
-            return result / TrainingData.Count();
+            return result/TrainingData.Count();
         }
-
-        //public double ComputeCostRegularized(double lambda)
-        //{
-        //    var cost = ComputeCost();
-        //    var reg = 0.0;
-
-        //    foreach (var weightVector in Network.Weights)
-        //    {
-        //        reg += weightVector.SubMatrix(0, weightVector.RowCount, 1, weightVector.ColumnCount - 1)
-        //                .Map(d => Math.Pow(d, 2))
-        //                .ColumnSums()
-        //                .Sum();
-        //    }
-
-        //    reg = lambda/2*reg;
-
-        //    return reg + cost;
-        //}
 
         public double ComputeCostRegularized(double lambda)
         {
@@ -131,7 +124,7 @@
                         .Sum();
             }
 
-            reg = reg * (lambda / (2 * TrainingData.Count()));
+            reg = reg*(lambda/(2*TrainingData.Count()));
 
             return cost + reg;
         }
@@ -159,14 +152,11 @@
             return deltaVectors;
         }
 
-        #region MapIndexed
+        public event EventHandler IterationFinished;
 
-        //NeuronalNetwork.Weights[0].MapIndexed((i, i1, arg3) =>
-
-        //{
-        //    return arg3;
-        //});
-
-        #endregion
+        protected virtual void OnIterationFinished()
+        {
+            IterationFinished?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

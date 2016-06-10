@@ -7,6 +7,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace NeuronalNetSharp.Core.Interfaces
 {
+    using System.Runtime.Serialization;
     public interface INeuronalNetwork
     {
         int SizeInputLayer { get; }
