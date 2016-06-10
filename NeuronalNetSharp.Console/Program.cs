@@ -6,6 +6,7 @@
     using System.IO;
     using System.Linq;
     using Core;
+    using Core.EventArgs;
     using Core.LearningAlgorithms;
     using Import;
     using MathNet.Numerics;
@@ -30,7 +31,7 @@
             var network = new NeuronalNetwork(784, 1, 10);
             var backprob = new BackpropagationLearningAlgorithm(network, rawData.Take(100));
 
-
+            backprob.IterationFinished += Test;
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -57,6 +58,12 @@
 
             Console.WriteLine(Directory.GetCurrentDirectory());
             Console.ReadLine();
+        }
+
+        public static void Test(object sender, EventArgs e)
+        {
+            var args = (IterationFinishedEventArgs) e;
+            Console.WriteLine(args.Cost);
         }
     }
 }

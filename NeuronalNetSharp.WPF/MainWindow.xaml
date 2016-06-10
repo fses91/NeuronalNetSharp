@@ -7,26 +7,44 @@
         xmlns:local="clr-namespace:NeuronalNetSharp.WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    
-    <Window.DataContext>
-        <local:MainViewModel/>
-    </Window.DataContext>
-    <Grid>
+   
+    <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
-        
-        
-        <StackPanel Grid.Column="0" Grid.Row="1">
+
+        <oxy:PlotView Name="PlotView" Model="{Binding CostFunctionPlotModel}"></oxy:PlotView>
+        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
             <Button Name="LoadTrainingData" Click="LoadTrainingData_Click">Load Training Data</Button>
             <Button Name="LoadTestData" Click="LoadTestData_OnClick">Load Test Data</Button>
-            <Button Name="LoadNetwork" Click="LoadNetwork_OnClick"></Button>
+            <Button Name="LoadNetwork" Click="LoadNetwork_OnClick">Load Network</Button>
         </StackPanel>
+
+        <Grid Grid.Column="1" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Width="auto">Iterations:</Label>
+            <TextBox Grid.Row="0" Grid.Column="1">100</TextBox>
+            <Label  Grid.Row="1" Grid.Column="0" Width="auto">Lambda:</Label>
+            <TextBox Grid.Row="1" Grid.Column="1">0.01</TextBox>
+            <Label Grid.Row="2" Grid.Column="0"  Width="auto">Alpha:</Label>
+            <TextBox Grid.Row="2" Grid.Column="1">0.01</TextBox>
+            <Button Grid.Row="3" Grid.Column="1" Margin="0,5,0,0">Train Network</Button>
+
+        </Grid>
     </Grid>
 </Window>

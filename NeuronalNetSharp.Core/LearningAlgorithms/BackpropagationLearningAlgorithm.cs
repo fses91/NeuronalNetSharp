@@ -4,30 +4,41 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using EventArgs;
     using Import;
     using Interfaces;
     using MathNet.Numerics.LinearAlgebra;
     using MathNet.Numerics.LinearAlgebra.Double;
 
-    public class BackpropagationLearningAlgorithm
+    public class BackpropagationLearningAlgorithm : ILearningAlgorithm
     {
-        public BackpropagationLearningAlgorithm(INeuronalNetwork network, IEnumerable<IDataset> traningData)
+        private IEnumerable<IDataset> _trainingData;
+
+        public BackpropagationLearningAlgorithm(INeuronalNetwork network)
         {
             Network = network;
             LabelMatrices = new Dictionary<string, Matrix>();
-            TrainingData = traningData;
-
-            InitilizeLabelMatrices();
         }
 
         public IDictionary<string, Matrix> LabelMatrices { get; set; }
 
         public INeuronalNetwork Network { get; set; }
 
-        public IEnumerable<IDataset> TrainingData { get; set; }
+        public IEnumerable<IDataset> TrainingData
+        {
+            get { return _trainingData; }
+            set
+            {
+                _trainingData = value;
+                InitilizeLabelMatrices();
+            }
+        }
 
         public INeuronalNetwork TrainNetwork(int iterations, double alpha, double lambda)
         {
+            if(TrainingData == null)
+                throw new NullReferenceException();
+
             var deltaMatrices = InitilizeDeltaMatrices();
             for (var i = 0; i < iterations; i++)
             {
@@ -67,18 +78,11 @@
                         Network.Weights[j].ColumnCount - 1, subWeights + subDelta);
                 });
 
-                //for (var j = 0; j < deltaMatrices.Count; j++)
-                //{
-                //    deltaMatrices[j] = deltaMatrices[j].Map(d => d / TrainingData.Count());
-                //    Network.Weights[j] = Network.Weights[j] - alpha * deltaMatrices[j];
-                //    var subDelta = deltaMatrices[j].SubMatrix(0, Network.Weights[j].RowCount, 1,
-                //        Network.Weights[j].ColumnCount - 1).Map(d => lambda / TrainingData.Count() * d);
-                //    var subWeights = Network.Weights[j].SubMatrix(0, Network.Weights[j].RowCount, 1,
-                //        Network.Weights[j].ColumnCount - 1);
-                //    Network.Weights[j].SetSubMatrix(0, Network.Weights[j].RowCount, 1, Network.Weights[j].ColumnCount - 1, subWeights + subDelta);
-                //}
-
-                Console.WriteLine("RegCost:" + ComputeCostRegularized(lambda));
+                IterationFinished?.Invoke(this, new IterationFinishedEventArgs
+                {
+                    Cost = ComputeCostRegularized(lambda),
+                    Iteration = i
+                });
             }
 
             return Network;
@@ -153,10 +157,5 @@
         }
 
         public event EventHandler IterationFinished;
-
-        protected virtual void OnIterationFinished()
-        {
-            IterationFinished?.Invoke(this, EventArgs.Empty);
-        }
     }
 }

@@ -29,15 +29,13 @@ namespace NeuronalNetSharp.WPF
         public MainWindow()
         {
             InitializeComponent();
+            var tmp = new MainViewModel();
+            DataContext = tmp;
+            tmp.TrainNetwork();
+
         }
 
-        private INeuronalNetwork Network { get; set; }
-
-        private ICollection<IDataset> TrainingData { get; set; }
-
-        private ICollection<IDataset> CrossValidationData { get; set; }
-
-        private ICollection<IDataset> TestData { get; set; }
+        
 
         private void LoadTrainingData_Click(object sender, RoutedEventArgs e)
         {
@@ -54,7 +52,7 @@ namespace NeuronalNetSharp.WPF
                 labelFile = openFileDialog.FileName;
 
             var importer = new MinstImporter();
-            TrainingData = importer.ImportData(dataFile, labelFile);
+            ((MainViewModel)DataContext).TrainingData = importer.ImportData(dataFile, labelFile);
         }
 
         private void LoadTestData_OnClick(object sender, RoutedEventArgs e)
