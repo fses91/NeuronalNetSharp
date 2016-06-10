@@ -29,20 +29,15 @@ namespace NeuronalNetSharp.WPF
         public MainWindow()
         {
             InitializeComponent();
-            var tmp = new MainViewModel();
-            DataContext = tmp;
-            tmp.TrainNetwork();
-
+            DataContext = new MainViewModel();
         }
-
-        
 
         private void LoadTrainingData_Click(object sender, RoutedEventArgs e)
         {
             var dataFile = string.Empty;
             var labelFile = string.Empty;
-            var openFileDialog = new OpenFileDialog();
 
+            var openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Select training data file.";
             if (openFileDialog.ShowDialog() == true)
                 dataFile = openFileDialog.FileName;
@@ -63,6 +58,12 @@ namespace NeuronalNetSharp.WPF
         private void LoadNetwork_OnClick(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
+        }
+
+        private void TrainNetwork_Click(object sender, RoutedEventArgs e)
+        {
+            var model = DataContext as MainViewModel;
+            model?.TrainNetwork();
         }
     }
 }

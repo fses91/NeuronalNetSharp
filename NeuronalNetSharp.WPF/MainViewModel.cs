@@ -68,13 +68,17 @@
 
         public ICollection<IDataset> TrainingData { get; set; }
 
-        public Task TrainingTaks { get; set; }
+        public double Alpha { get; set; }
+
+        public double Lambda { get; set; }
+
+        public Task TrainingTask { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void TrainNetwork()
         {
-            TrainingTaks = Task.Run(() => LearningAlgorithm.TrainNetwork(100, 0.01, 0.01));
+            TrainingTask = Task.Run(() => LearningAlgorithm.TrainNetwork(100, 0.01, 0.01));
         }
 
         public void UpdateCostFunctionPlot(object sender, EventArgs e)
