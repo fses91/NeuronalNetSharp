@@ -3,16 +3,18 @@
     using System;
     using System.Collections.Generic;
     using Import;
+    using MathNet.Numerics.LinearAlgebra.Double;
 
     public interface ILearningAlgorithm
     {
-        IEnumerable<IDataset> TrainingData { get; set; }
+        IDictionary<string, Matrix> LabelMatrices { get; set; }
+        INeuronalNetwork Network { get; set; }
 
-        INeuronalNetwork TrainNetwork(int iterations, double alpha, double lambda);
+        INeuronalNetwork TrainNetwork(int iterations, double alpha, double lambda, IList<IDataset> trainingData);
 
-        double ComputeCost();
+        double ComputeCost(IList<IDataset> trainingData);
 
-        double ComputeCostRegularized(double lambda);
+        double ComputeCostRegularized(double lambda, IList<IDataset> trainingData);
 
         event EventHandler IterationFinished;
     }

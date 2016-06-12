@@ -29,13 +29,13 @@
                 @"train-labels-idx1-ubyte").ToList();
 
             var network = new NeuronalNetwork(784, 1, 10);
-            var backprob = new BackpropagationLearningAlgorithm(network, rawData.Take(100));
+            var backprob = new BackpropagationLearningAlgorithm(network);
 
             backprob.IterationFinished += Test;
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var test = backprob.TrainNetwork(100, 0.01, 0);
+            var test = backprob.TrainNetwork(100, 0.01, 0, rawData.Take(100).ToList());
             stopwatch.Stop();
             Console.WriteLine(stopwatch.Elapsed);
 

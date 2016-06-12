@@ -12,8 +12,6 @@
 
     public class BackpropagationLearningAlgorithm : ILearningAlgorithm
     {
-        private IEnumerable<IDataset> _trainingData;
-
         public BackpropagationLearningAlgorithm(INeuronalNetwork network)
         {
             Network = network;
@@ -24,25 +22,17 @@
 
         public INeuronalNetwork Network { get; set; }
 
-        public IEnumerable<IDataset> TrainingData
+        public INeuronalNetwork TrainNetwork(int iterations, double alpha, double lambda, IList<IDataset> trainingData)
         {
-            get { return _trainingData; }
-            set
-            {
-                _trainingData = value;
-                InitilizeLabelMatrices();
-            }
-        }
-
-        public INeuronalNetwork TrainNetwork(int iterations, double alpha, double lambda)
-        {
-            if(TrainingData == null)
+            if (trainingData == null)
                 throw new NullReferenceException();
+
+            InitilizeLabelMatrices(trainingData);
 
             var deltaMatrices = InitilizeDeltaMatrices();
             for (var i = 0; i < iterations; i++)
             {
-                foreach (var dataset in TrainingData)
+                foreach (var dataset in trainingData)
                 {
                     var tmpDeltaVectors = new List<Matrix<double>>();
                     var output = Network.ComputeOutput(dataset.Data);
@@ -68,10 +58,10 @@
                 // Update weights.
                 Parallel.For(0, deltaMatrices.Count, j =>
                 {
-                    deltaMatrices[j] = deltaMatrices[j].Map(d => d/TrainingData.Count());
+                    deltaMatrices[j] = deltaMatrices[j].Map(d => d/trainingData.Count());
                     Network.Weights[j] = Network.Weights[j] - alpha*deltaMatrices[j];
                     var subDelta = deltaMatrices[j].SubMatrix(0, Network.Weights[j].RowCount, 1,
-                        Network.Weights[j].ColumnCount - 1).Map(d => lambda/TrainingData.Count()*d);
+                        Network.Weights[j].ColumnCount - 1).Map(d => lambda/trainingData.Count()*d);
                     var subWeights = Network.Weights[j].SubMatrix(0, Network.Weights[j].RowCount, 1,
                         Network.Weights[j].ColumnCount - 1);
                     Network.Weights[j].SetSubMatrix(0, Network.Weights[j].RowCount, 1,
@@ -80,7 +70,7 @@
 
                 IterationFinished?.Invoke(this, new IterationFinishedEventArgs
                 {
-                    Cost = ComputeCostRegularized(lambda),
+                    Cost = ComputeCostRegularized(lambda, trainingData),
                     Iteration = i
                 });
             }
@@ -88,25 +78,25 @@
             return Network;
         }
 
-        public double ComputeCost()
+        public double ComputeCost(IList<IDataset> trainingData)
         {
             // Cost
             var result = 0.0;
-            foreach (var dataset in TrainingData)
+            foreach (var dataset in trainingData)
             {
                 var difference = Network.ComputeOutput(dataset.Data) - LabelMatrices[dataset.Label];
                 var norm = difference.CalculateNorm();
                 result += 1.0/2.0*Math.Pow(norm, 2);
             }
 
-            return result/TrainingData.Count();
+            return result/trainingData.Count;
         }
 
-        public double ComputeCostRegularized(double lambda)
+        public double ComputeCostRegularized(double lambda, IList<IDataset> trainingData)
         {
             // Calculate cost.
             var cost = 0.0;
-            foreach (var dataset in TrainingData)
+            foreach (var dataset in trainingData)
             {
                 var result = Network.ComputeOutput(dataset.Data);
                 var labelmatrix = LabelMatrices[dataset.Label];
@@ -128,15 +118,15 @@
                         .Sum();
             }
 
-            reg = reg*(lambda/(2*TrainingData.Count()));
+            reg = reg*(lambda/(2* trainingData.Count()));
 
             return cost + reg;
         }
 
-        private void InitilizeLabelMatrices()
+        private void InitilizeLabelMatrices(IEnumerable<IDataset> trainingData)
         {
             // Initialize Label Matrices
-            var distinctLabels = TrainingData.Select(x => x.Label).Distinct().ToList();
+            var distinctLabels = trainingData.Select(x => x.Label).Distinct().ToList();
             for (var i = 0; i < distinctLabels.Count; i++)
             {
                 var matrix = DenseMatrix.OfColumnArrays(new double[distinctLabels.Count()]);

@@ -26,13 +26,6 @@
             LearningAlgorithm = new BackpropagationLearningAlgorithm(Network);
             LearningAlgorithm.IterationFinished += UpdateCostFunctionPlot;
 
-            var impo = new MinstImporter();
-            var data =
-                impo.ImportData(
-                    @"C:\Users\Florian\Source\Repos\NeuronalNetSharp\NeuronalNetSharp.Console\train-images-idx3-ubyte",
-                    @"C:\Users\Florian\Source\Repos\NeuronalNetSharp\NeuronalNetSharp.Console\train-labels-idx1-ubyte");
-            LearningAlgorithm.TrainingData = data.Take(100);
-
             CostFunctionLineSeries = new LineSeries();
             CostFunctionPlotModel = new PlotModel
             {
@@ -42,7 +35,19 @@
                     new LinearAxis {Position = AxisPosition.Bottom, Minimum = 0, Maximum = 120}
                 }
             };
+
+            Alpha = 0.01;
+            Lambda = 0.01;
+            Iterations = 100;
         }
+
+        public int TraingDataToUse { get; set; }
+
+        public int CrossValidationDataToUse { get; set; }
+
+        public int TestDataToUse { get; set; }
+
+        public double Alpha { get; set; }
 
         public LineSeries CostFunctionLineSeries { get; set; }
 
@@ -60,17 +65,17 @@
 
         public ICollection<IDataset> CrossValidationData { get; set; }
 
+        public int Iterations { get; set; }
+
+        public double Lambda { get; set; }
+
         public ILearningAlgorithm LearningAlgorithm { get; set; }
 
         public INeuronalNetwork Network { get; set; }
 
         public ICollection<IDataset> TestData { get; set; }
 
-        public ICollection<IDataset> TrainingData { get; set; }
-
-        public double Alpha { get; set; }
-
-        public double Lambda { get; set; }
+        public IEnumerable<IDataset> TrainingData { get; set; }
 
         public Task TrainingTask { get; set; }
 
@@ -78,7 +83,20 @@
 
         public void TrainNetwork()
         {
-            TrainingTask = Task.Run(() => LearningAlgorithm.TrainNetwork(100, 0.01, 0.01));
+            if (TrainingTask == null || TrainingTask.IsCompleted)
+            {
+                TrainingTask = Task.Run(() => LearningAlgorithm.TrainNetwork(Iterations, Alpha, Lambda, TrainingData.Take(TraingDataToUse).ToList()));
+            }
+        }
+
+        public void TestNetwork()
+        {
+            var result = NetworkTester.TestNetwork(LearningAlgorithm.Network, TrainingData.Take(TraingDataToUse), LearningAlgorithm.LabelMatrices);
+        }
+
+        public void TestNetworkWithCrossValidation()
+        {
+            NetworkTester.TestNetwork(LearningAlgorithm.Network, TrainingData.Skip(TraingDataToUse).Take(CrossValidationDataToUse), LearningAlgorithm.LabelMatrices);
         }
 
         public void UpdateCostFunctionPlot(object sender, EventArgs e)

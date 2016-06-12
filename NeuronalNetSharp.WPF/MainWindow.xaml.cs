@@ -18,6 +18,7 @@ namespace NeuronalNetSharp.WPF
     using System.IO;
     using Core.Interfaces;
     using Import;
+    using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
     using Microsoft.Win32;
     using OxyPlot.Wpf;
 
@@ -39,31 +40,42 @@ namespace NeuronalNetSharp.WPF
 
             var openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Select training data file.";
-            if (openFileDialog.ShowDialog() == true)
-                dataFile = openFileDialog.FileName;
+            if (openFileDialog.ShowDialog() == false)
+                return;
+
+            dataFile = openFileDialog.FileName;
 
             openFileDialog.Title = "Select label data file.";
-            if (openFileDialog.ShowDialog() == true)
-                labelFile = openFileDialog.FileName;
+            if (openFileDialog.ShowDialog() == false)
+                return;
+
+            labelFile = openFileDialog.FileName;
 
             var importer = new MinstImporter();
             ((MainViewModel)DataContext).TrainingData = importer.ImportData(dataFile, labelFile);
         }
 
-        private void LoadTestData_OnClick(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void LoadNetwork_OnClick(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void TrainNetwork_Click(object sender, RoutedEventArgs e)
         {
             var model = DataContext as MainViewModel;
-            model?.TrainNetwork();
+
+            if (model?.TrainingData == null ||
+                !model.TrainingData.Any())
+            {
+                MessageBox.Show(this, "No training data was loaded.", ContentStringFormat, MessageBoxButton.OK);
+                return;
+            }
+            model.TrainNetwork();
+        }
+
+        private void TestNetworkButton_Click(object sender, RoutedEventArgs e)
+        {
+            var model = DataContext as MainViewModel;
+
+            if (model != null && !model.TrainingTask.IsCompleted)
+                MessageBox.Show(this, "Network is not finished with training.");
+            else
+                model?.TestNetwork();
         }
     }
 }

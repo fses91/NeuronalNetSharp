@@ -60,6 +60,8 @@
     <Compile Include="Interfaces\INeuronalNetwork.cs" />
     <Compile Include="LearningAlgorithms\BackpropagationLearningAlgorithm.cs" />
     <Compile Include="Interfaces\ILearningAlgorithm.cs" />
+    <Compile Include="NetworkTester.cs" />
+    <Compile Include="NetworkTestResult.cs" />
     <Compile Include="NeuronalNetwork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
