@@ -6,7 +6,7 @@
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         xmlns:local="clr-namespace:NeuronalNetSharp.WPF"
         mc:Ignorable="d"
-        Title="Neuronal Net Sharp" Height="455.334" Width="601">
+        Title="Neuronal Net Sharp" Height="601.334" Width="881">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -32,19 +32,54 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-            
-            <Label Grid.Row="0" Grid.Column="0" Width="auto">Iterations:</Label>
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Iterations}"></TextBox>
-            <Label  Grid.Row="1" Grid.Column="0" Width="auto">Lambda:</Label>
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Alpha}"></TextBox>
-            <Label Grid.Row="2" Grid.Column="0"  Width="auto">Alpha:</Label>
-            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Lambda}"></TextBox>
-            <Button Name="TrainNetwork" Grid.Row="3" Grid.Column="1" Margin="0,5,0,0" Click="TrainNetwork_Click">Train Network</Button>
-            
-            <GroupBox Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Header="Training data">
+
+            <GroupBox Grid.Column="0" Grid.Row="0" Header="Network" Grid.ColumnSpan="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Label Grid.Column="0" Grid.Row="0">Input size:</Label>
+                    <TextBox Grid.Column="1" Grid.Row="0" Name="InputLayerSize" Text="{Binding InputLayerSize}"></TextBox>
+
+                    <Label Grid.Column="0" Grid.Row="1">Lables:</Label>
+                    <TextBox Grid.Column="1" Grid.Row="1" Name="OutputLayerSize" Text="{Binding OutputLayerSize}"></TextBox>
+
+                    <Label Grid.Column="0" Grid.Row="2">Hidden layers:</Label>
+                    <TextBox Grid.Column="1" Grid.Row="2" Name="AmountHiddenLayers" Text="{Binding NumberOfHiddenLayers}"></TextBox>
+                    
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="0" Grid.Row="1" Header="Training" Grid.ColumnSpan="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Width="auto">Iterations:</Label>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Iterations}"></TextBox>
+                    <Label  Grid.Row="1" Grid.Column="0" Width="auto">Alpha:</Label>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Alpha}"></TextBox>
+                    <Label Grid.Row="2" Grid.Column="0"  Width="auto">Lambda:</Label>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Lambda}"></TextBox>
+                    <Button Name="TrainNetwork" Grid.Row="3" Grid.Column="1" Margin="0,5,0,0" Click="TrainNetwork_Click">Train Network</Button>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Header="Training data">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -60,7 +95,7 @@
                     <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Name="LoadTrainingData" Click="LoadTrainingData_Click">Load Training Data</Button>
                 </Grid>
             </GroupBox>
-            <GroupBox Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Header="Cross validation data">
+            <GroupBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Header="Cross validation data">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -74,7 +109,7 @@
                     <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding CrossValidationDataToUse}"></TextBox>
                 </Grid>
             </GroupBox>
-            <GroupBox Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Header="Test data">
+            <GroupBox Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Header="Test data">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -89,19 +124,7 @@
                     <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding TestDataToUse}"></TextBox>
                 </Grid>
             </GroupBox>
-            <GroupBox Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Header="Test">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Button Grid.Row="0" Margin="5" Name="TestNetworkButton" Click="TestNetworkButton_Click">Test Network On Test Data</Button>
-                    <Button Grid.Row="1" Margin="5" Name="TestNetworkOnCrossValidationDataButton">Test Network On Cross Validation Data</Button>
-                    <Button Grid.Row="2" Margin="5" Name="TestNetworkOnTestData">Test Network On Test Data</Button>
-                </Grid>
-            </GroupBox>
-            <!--<GroupBox Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+            <GroupBox Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Header="Test">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
@@ -111,13 +134,23 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition ></ColumnDefinition>
                     </Grid.ColumnDefinitions>
+                    
+                    <Button Grid.Row="0" Grid.Column="0" Margin="5" Name="TestNetworkButton" Click="TestNetworkButton_Click">Test Network On Test Data</Button>
+                    <Label Grid.Row="0" Grid.Column="1">Error:</Label>
+                    <Label Grid.Row="0" Grid.Column="2" Content="{Binding TestError}"></Label>
+                    
+                    <Button Grid.Row="1" Grid.Column="0" Margin="5" Name="TestNetworkOnCrossValidationDataButton" Click="TestNetworkOnCrossValidationDataButton_Click">Test Network On Cross Validation Data</Button>
+                    <Label Grid.Row="1" Grid.Column="1">Error:</Label>
+                    <Label Grid.Row="1" Grid.Column="2" Content="{Binding CrossValidationError}"></Label>
+                    
+                    <Button Grid.Row="2" Grid.Column="0" Margin="5" Name="TestNetworkOnTestData">Test Network On Test Data</Button>
                 </Grid>
-                
-            </GroupBox>-->
+            </GroupBox>
+
             
-            
-            
+                     
         </Grid>
     </Grid>
 </Window>

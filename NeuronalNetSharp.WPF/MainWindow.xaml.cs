@@ -77,5 +77,15 @@ namespace NeuronalNetSharp.WPF
             else
                 model?.TestNetwork();
         }
+
+        private void TestNetworkOnCrossValidationDataButton_Click(object sender, RoutedEventArgs e)
+        {
+            var model = DataContext as MainViewModel;
+
+            if (model != null && !model.TrainingTask.IsCompleted)
+                MessageBox.Show(this, "Network is not finished with training.");
+            else
+                model?.TestNetworkWithCrossValidation();
+        }
     }
 }

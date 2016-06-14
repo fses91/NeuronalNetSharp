@@ -19,6 +19,8 @@
     public class MainViewModel : INotifyPropertyChanged
     {
         private PlotModel _costFunctionPlotModel;
+        private double _crossValidationError;
+        private double _testError;
 
         public MainViewModel()
         {
@@ -31,7 +33,7 @@
             {
                 Axes =
                 {
-                    new LinearAxis {Position = AxisPosition.Left, Minimum = 0, Maximum = 5},
+                    new LinearAxis {Position = AxisPosition.Left, Minimum = 0, Maximum = 30},
                     new LinearAxis {Position = AxisPosition.Bottom, Minimum = 0, Maximum = 120}
                 }
             };
@@ -41,12 +43,6 @@
             Iterations = 100;
         }
 
-        public int TraingDataToUse { get; set; }
-
-        public int CrossValidationDataToUse { get; set; }
-
-        public int TestDataToUse { get; set; }
-
         public double Alpha { get; set; }
 
         public LineSeries CostFunctionLineSeries { get; set; }
@@ -54,7 +50,6 @@
         public PlotModel CostFunctionPlotModel
         {
             get { return _costFunctionPlotModel; }
-
             set
             {
                 if (value == _costFunctionPlotModel) return;
@@ -65,6 +60,21 @@
 
         public ICollection<IDataset> CrossValidationData { get; set; }
 
+        public int CrossValidationDataToUse { get; set; }
+
+        public double CrossValidationError
+        {
+            get { return _crossValidationError; }
+            set
+            {
+                if (value == _crossValidationError) return;
+                _crossValidationError = value;
+                OnPropertyChanged(nameof(CrossValidationError));
+            }
+        }
+
+        public int InputLayerSize { get; set; }
+
         public int Iterations { get; set; }
 
         public double Lambda { get; set; }
@@ -73,7 +83,26 @@
 
         public INeuronalNetwork Network { get; set; }
 
+        public int NumberOfHiddenLayers { get; set; }
+
+        public int OutputLayerSize { get; set; }
+
         public ICollection<IDataset> TestData { get; set; }
+
+        public int TestDataToUse { get; set; }
+
+        public double TestError
+        {
+            get { return _testError; }
+            set
+            {
+                if (value == _testError) return;
+                _testError = value;
+                OnPropertyChanged(nameof(TestError));
+            }
+        }
+
+        public int TraingDataToUse { get; set; }
 
         public IEnumerable<IDataset> TrainingData { get; set; }
 
@@ -83,20 +112,28 @@
 
         public void TrainNetwork()
         {
+            Network = new NeuronalNetwork(InputLayerSize, NumberOfHiddenLayers, OutputLayerSize);
+
             if (TrainingTask == null || TrainingTask.IsCompleted)
             {
-                TrainingTask = Task.Run(() => LearningAlgorithm.TrainNetwork(Iterations, Alpha, Lambda, TrainingData.Take(TraingDataToUse).ToList()));
+                TrainingTask =
+                    Task.Run(
+                        () =>
+                            LearningAlgorithm.TrainNetwork(Iterations, Alpha, Lambda,
+                                TrainingData.Take(TraingDataToUse).ToList()));
             }
         }
 
         public void TestNetwork()
         {
-            var result = NetworkTester.TestNetwork(LearningAlgorithm.Network, TrainingData.Take(TraingDataToUse), LearningAlgorithm.LabelMatrices);
+            TestError = NetworkTester.TestNetwork(LearningAlgorithm.Network, TrainingData.Take(TraingDataToUse),
+                LearningAlgorithm.LabelMatrices);
         }
 
         public void TestNetworkWithCrossValidation()
         {
-            NetworkTester.TestNetwork(LearningAlgorithm.Network, TrainingData.Skip(TraingDataToUse).Take(CrossValidationDataToUse), LearningAlgorithm.LabelMatrices);
+            CrossValidationError = NetworkTester.TestNetwork(LearningAlgorithm.Network,
+                TrainingData.Skip(TraingDataToUse).Take(CrossValidationDataToUse), LearningAlgorithm.LabelMatrices);
         }
 
         public void UpdateCostFunctionPlot(object sender, EventArgs e)
@@ -105,8 +142,13 @@
             CostFunctionLineSeries.Points.Add(new DataPoint(args.Iteration, args.Cost));
 
             var plotModel = new PlotModel();
-            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Left, Minimum = 0, Maximum = 5});
-            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Bottom, Minimum = 0, Maximum = 120});
+            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Left, Minimum = 0, Maximum = args.Cost + 5});
+            plotModel.Axes.Add(new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                Minimum = 0,
+                Maximum = args.Iteration + 10
+            });
             CostFunctionPlotModel.Series.Clear();
             plotModel.Series.Add(CostFunctionLineSeries);
             CostFunctionPlotModel = plotModel;

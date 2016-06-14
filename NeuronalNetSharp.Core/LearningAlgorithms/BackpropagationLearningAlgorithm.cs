@@ -61,7 +61,7 @@
                     deltaMatrices[j] = deltaMatrices[j].Map(d => d/trainingData.Count());
                     Network.Weights[j] = Network.Weights[j] - alpha*deltaMatrices[j];
                     var subDelta = deltaMatrices[j].SubMatrix(0, Network.Weights[j].RowCount, 1,
-                        Network.Weights[j].ColumnCount - 1).Map(d => lambda/trainingData.Count()*d);
+                        Network.Weights[j].ColumnCount - 1).Map(d => lambda/trainingData.Count*d);
                     var subWeights = Network.Weights[j].SubMatrix(0, Network.Weights[j].RowCount, 1,
                         Network.Weights[j].ColumnCount - 1);
                     Network.Weights[j].SetSubMatrix(0, Network.Weights[j].RowCount, 1,

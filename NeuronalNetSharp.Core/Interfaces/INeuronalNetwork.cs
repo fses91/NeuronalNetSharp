@@ -19,5 +19,7 @@ namespace NeuronalNetSharp.Core.Interfaces
         IList<Matrix<double>> HiddenLayers { get; }
 
         Matrix<double> ComputeOutput(Matrix<double> input);
+
+        void SetLayerSize(int layer, int size);
     }
 }

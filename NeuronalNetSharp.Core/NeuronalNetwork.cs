@@ -22,8 +22,8 @@
 
             Weights = new List<Matrix<double>>();
 
-            InitializeWeights();
             InitializeLayers();
+            InitializeWeights();
         }
 
         public int NumberOfHiddenLayers { get; }
@@ -44,6 +44,11 @@
 
             var outputLayer = Weights.Last()*HiddenLayers.Last();
             return outputLayer.Map(SpecialFunctions.Logistic);
+        }
+
+        public void SetLayerSize(int layer, int size)
+        {
+            
         }
 
         public IList<Matrix<double>> HiddenLayers { get; }
