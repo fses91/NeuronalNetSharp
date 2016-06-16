@@ -57,7 +57,7 @@ namespace NeuronalNetSharp.WPF
 
         private void TrainNetwork_Click(object sender, RoutedEventArgs e)
         {
-            var model = DataContext as MainViewModel;
+            var model = (MainViewModel) DataContext;
 
             if (model?.TrainingData == null ||
                 !model.TrainingData.Any())
@@ -70,7 +70,7 @@ namespace NeuronalNetSharp.WPF
 
         private void TestNetworkButton_Click(object sender, RoutedEventArgs e)
         {
-            var model = DataContext as MainViewModel;
+            var model = (MainViewModel) DataContext;
 
             if (model != null && !model.TrainingTask.IsCompleted)
                 MessageBox.Show(this, "Network is not finished with training.");
@@ -80,12 +80,21 @@ namespace NeuronalNetSharp.WPF
 
         private void TestNetworkOnCrossValidationDataButton_Click(object sender, RoutedEventArgs e)
         {
-            var model = DataContext as MainViewModel;
+            var model = (MainViewModel) DataContext;
 
             if (model != null && !model.TrainingTask.IsCompleted)
                 MessageBox.Show(this, "Network is not finished with training.");
             else
                 model?.TestNetworkWithCrossValidation();
+        }
+
+        private void VisualizeNodesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var model = (MainViewModel) DataContext;
+
+            var btmap = VisualizerTmp.VisualizeLayerGrayscale(model.Network.Weights[0], 28, 28);
+
+            UnitImage.Source = btmap;
         }
     }
 }

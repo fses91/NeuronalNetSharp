@@ -113,6 +113,7 @@
         public void TrainNetwork()
         {
             Network = new NeuronalNetwork(InputLayerSize, NumberOfHiddenLayers, OutputLayerSize);
+            Network.SetLayerSize(0, 100);
 
             if (TrainingTask == null || TrainingTask.IsCompleted)
             {

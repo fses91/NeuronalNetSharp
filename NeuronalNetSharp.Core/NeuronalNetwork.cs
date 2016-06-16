@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.Serialization;
     using Interfaces;
     using MathNet.Numerics;
     using MathNet.Numerics.Distributions;
@@ -46,18 +45,19 @@
             return outputLayer.Map(SpecialFunctions.Logistic);
         }
 
+        public IList<Matrix<double>> HiddenLayers { get; }
+
         public void SetLayerSize(int layer, int size)
         {
-            
+            HiddenLayers[layer] = DenseMatrix.OfColumnArrays(new double[size + 1]);
+            InitializeWeights();
         }
-
-        public IList<Matrix<double>> HiddenLayers { get; }
 
         public int SizeInputLayer { get; }
 
         public int SizeOutputLayer { get; }
 
-        public IList<Matrix<double>> Weights { get; }
+        public IList<Matrix<double>> Weights { get; set; }
 
         /// <summary>
         ///     Initialize Layers.
@@ -79,12 +79,26 @@
         {
             // TODO überarbeiten, Überlegung wegen Weight initialisierung welchen Wert für Epsilon.
             var epsilon = Math.Sqrt(6)/Math.Sqrt(SizeInputLayer + SizeOutputLayer);
+            Weights.Clear();
+
+            if (NumberOfHiddenLayers <= 0)
+            {
+                Weights.Add(DenseMatrix.CreateRandom(SizeOutputLayer, SizeInputLayer + 1, new ContinuousUniform(-epsilon, epsilon)));
+                return;
+            }
 
             for (var i = 0; i < NumberOfHiddenLayers; i++)
-                Weights.Add(DenseMatrix.CreateRandom(SizeInputLayer, SizeInputLayer + 1,
-                    new ContinuousUniform(-epsilon, epsilon)));
+            {
+                if (i <= 0)
+                {
+                    Weights.Add(DenseMatrix.CreateRandom(HiddenLayers[0].RowCount - 1, SizeInputLayer + 1, new ContinuousUniform(-epsilon, epsilon)));
+                    continue;
+                }
 
-            Weights.Add(DenseMatrix.CreateRandom(SizeOutputLayer, SizeInputLayer + 1,
+                Weights.Add(DenseMatrix.CreateRandom(HiddenLayers[i].RowCount - 1, HiddenLayers[i - 1].RowCount, new ContinuousUniform(-epsilon, epsilon)));
+            }
+
+            Weights.Add(DenseMatrix.CreateRandom(SizeOutputLayer, HiddenLayers.Last().RowCount,
                 new ContinuousUniform(-epsilon, epsilon)));
         }
     }
