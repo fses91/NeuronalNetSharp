@@ -1,11 +1,12 @@
-﻿namespace NeuronalNetSharp.Console
+﻿using NeuronalNetSharp.Core;
+using NeuronalNetSharp.Core.LearningAlgorithms;
+
+namespace NeuronalNetSharp.Console
 {
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using Core;
-    using Core.LearningAlgorithms;
     using Import;
     using MathNet.Numerics;
     using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
@@ -31,8 +32,8 @@
             Console.WriteLine($"{rep.terminationtype}"); // EXPECTED: 4
             Console.WriteLine($"{alglib.ap.format(x, 2)}"); // EXPECTED: [-3,3]
             Console.ReadLine();
+     
             return;
-
 
             //Control.NativeProviderPath = "x64/";
 

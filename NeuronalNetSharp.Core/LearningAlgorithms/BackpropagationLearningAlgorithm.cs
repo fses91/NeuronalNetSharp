@@ -153,6 +153,15 @@
                     deltaMatrices[j] = deltaMatrices[j] + tmpDeltaVectors[j]*Network.HiddenLayers[j - 1].Transpose();
             }
 
+            Parallel.ForEach(deltaMatrices, matrix => matrix.Map(d => d/trainingData.Count));
+
+            var shapedMatrix = deltaMatrices[0].ToColumnWiseArray();
+            for (var i = 0; i < deltaMatrices.Count; i++)
+            {
+                var enumerable = shapedMatrix.Concat(deltaMatrices[i + 1].ToColumnWiseArray());
+            }
+
+
             return 0.0;
         }
 
