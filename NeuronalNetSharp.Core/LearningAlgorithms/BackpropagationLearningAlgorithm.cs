@@ -125,6 +125,37 @@
             return cost + reg;
         }
 
+        public double ComputeDerivatives(IList<IDataset> trainingData)
+        {
+            var deltaMatrices = InitilizeDeltaMatrices();
+
+            foreach (var dataset in trainingData)
+            {
+                var tmpDeltaVectors = new List<Matrix<double>>();
+                var output = Network.ComputeOutput(dataset.Data);
+                var deltaLast = output - LabelMatrices[dataset.Label];
+                tmpDeltaVectors.Add(deltaLast);
+
+                for (var j = Network.Weights.Count - 1; j >= 1; j--)
+                {
+                    var tmp1 = Network.Weights[j].Transpose()*tmpDeltaVectors.Last();
+                    var tmp2 = Network.HiddenLayers[j - 1].Map(d => d*(1 - d));
+                    var delta = tmp1.PointwiseMultiply(tmp2);
+
+                    tmpDeltaVectors.Add(delta.SubMatrix(1, delta.RowCount - 1, 0, delta.ColumnCount));
+                }
+
+                tmpDeltaVectors.Reverse();
+                deltaMatrices[0] = deltaMatrices[0] +
+                                   tmpDeltaVectors[0]*DenseMatrix.Create(1, 1, 1).Append(dataset.Data.Transpose());
+
+                for (var j = 1; j < deltaMatrices.Count; j++)
+                    deltaMatrices[j] = deltaMatrices[j] + tmpDeltaVectors[j]*Network.HiddenLayers[j - 1].Transpose();
+            }
+
+            return 0.0;
+        }
+
         private void InitilizeLabelMatrices(IEnumerable<IDataset> trainingData)
         {
             // Initialize Label Matrices
