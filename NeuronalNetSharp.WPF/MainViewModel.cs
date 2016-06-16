@@ -114,6 +114,7 @@
         {
             Network = new NeuronalNetwork(InputLayerSize, NumberOfHiddenLayers, OutputLayerSize);
             Network.SetLayerSize(0, 100);
+            LearningAlgorithm.Network = Network;
 
             if (TrainingTask == null || TrainingTask.IsCompleted)
             {

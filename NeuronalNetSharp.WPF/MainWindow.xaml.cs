@@ -1,29 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-namespace NeuronalNetSharp.WPF
+﻿namespace NeuronalNetSharp.WPF
 {
-    using System.IO;
-    using Core.Interfaces;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
     using Import;
-    using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
     using Microsoft.Win32;
-    using OxyPlot.Wpf;
 
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -52,7 +36,7 @@ namespace NeuronalNetSharp.WPF
             labelFile = openFileDialog.FileName;
 
             var importer = new MinstImporter();
-            ((MainViewModel)DataContext).TrainingData = importer.ImportData(dataFile, labelFile);
+            ((MainViewModel) DataContext).TrainingData = importer.ImportData(dataFile, labelFile);
         }
 
         private void TrainNetwork_Click(object sender, RoutedEventArgs e)
@@ -72,7 +56,7 @@ namespace NeuronalNetSharp.WPF
         {
             var model = (MainViewModel) DataContext;
 
-            if (model != null && !model.TrainingTask.IsCompleted)
+            if (model?.TrainingTask != null && !model.TrainingTask.IsCompleted)
                 MessageBox.Show(this, "Network is not finished with training.");
             else
                 model?.TestNetwork();
@@ -94,7 +78,8 @@ namespace NeuronalNetSharp.WPF
 
             var btmap = VisualizerTmp.VisualizeLayerGrayscale(model.Network.Weights[0], 28, 28);
 
-            UnitImage.Source = btmap;
+            foreach (var imageSource in btmap)
+                VisalizationListBox.Items.Add(new Image {Source = imageSource, Width = 100, Height = 100});
         }
     }
 }

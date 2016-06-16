@@ -6,7 +6,7 @@
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         xmlns:local="clr-namespace:NeuronalNetSharp.WPF"
         mc:Ignorable="d"
-        Title="Neuronal Net Sharp" Height="601.334" Width="881">
+        Title="Neuronal Net Sharp" Height="644.334" Width="881">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -19,9 +19,14 @@
         </Grid.ColumnDefinitions>
 
         <oxy:PlotView Grid.Row="0" Grid.Column="0" Name="PlotView" Margin="5" Model="{Binding CostFunctionPlotModel}"></oxy:PlotView>
-        <!--<Border x:Name="UnitBorder" Grid.Row="1" Grid.Column="0" BorderThickness="2" BorderBrush="Black" Height="{Binding Path=ActualHeight, ElementName=UnitImage}" Width="{Binding Path=ActualWidth, ElementName=UnitImage}">-->
-        <Image Grid.Row="1" Grid.Column="0"  x:Name="UnitImage" Stretch="Fill"></Image>
-        <!--</Border>-->
+        <ListBox Grid.Row="1" Grid.Column="0" Name="VisalizationListBox">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="3"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            
+        </ListBox>
         
 
         <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
@@ -153,7 +158,19 @@
                     <Button Grid.Row="2" Grid.Column="0" Margin="5" Name="TestNetworkOnTestData">Test Network On Test Data</Button>
                 </Grid>
             </GroupBox>
-            <Button Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Name="VisualizeNodesButton" Click="VisualizeNodesButton_Click">Visualize</Button>
+            <GroupBox Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Header="Visualization">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition ></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label>Layer:</Label>
+                    <TextBox Grid.Column="1" Name="LayerToVisualizeTextBox" Margin="5"></TextBox>
+                    <Button Grid.Column="2" Name="VisualizeNodesButton" Margin="5" Click="VisualizeNodesButton_Click">Visualize</Button>
+                </Grid>
+            </GroupBox>
+            
             
                      
         </Grid>

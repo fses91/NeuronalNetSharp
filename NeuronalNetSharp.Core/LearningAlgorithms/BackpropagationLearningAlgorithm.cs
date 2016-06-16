@@ -55,7 +55,7 @@
                         deltaMatrices[j] = deltaMatrices[j] + tmpDeltaVectors[j]*Network.HiddenLayers[j - 1].Transpose();
                 }
 
-                // Update weights.
+                // Update weights. (Gradient Descent)
                 Parallel.For(0, deltaMatrices.Count, j =>
                 {
                     deltaMatrices[j] = deltaMatrices[j].Map(d => d/trainingData.Count);
@@ -128,6 +128,8 @@
         private void InitilizeLabelMatrices(IEnumerable<IDataset> trainingData)
         {
             // Initialize Label Matrices
+            LabelMatrices.Clear();
+
             var distinctLabels = trainingData.Select(x => x.Label).Distinct().ToList();
             for (var i = 0; i < distinctLabels.Count; i++)
             {
