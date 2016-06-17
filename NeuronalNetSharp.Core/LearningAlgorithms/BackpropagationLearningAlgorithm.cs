@@ -70,9 +70,10 @@
                         Network.Weights[j].ColumnCount - 1, subWeights + subDelta);
                 });
 
+
                 IterationFinished?.Invoke(this, new IterationFinishedEventArgs
                 {
-                    Cost = ComputeCostRegularized(lambda, trainingData),
+                    Cost = ComputeCostRegularized(trainingData, lambda),
                     Iteration = i
                 });
             }
@@ -94,22 +95,8 @@
             return result/trainingData.Count;
         }
 
-        public double ComputeCostRegularized(double lambda, IList<IDataset> trainingData)
+        public double ComputeCostRegularized(IList<IDataset> trainingData, double lambda)
         {
-            // Calculate cost.
-            var cost = 0.0;
-            foreach (var dataset in trainingData)
-            {
-                var result = Network.ComputeOutput(dataset.Data);
-                var labelmatrix = LabelMatrices[dataset.Label];
-
-                var tmpCost =
-                    -labelmatrix.PointwiseMultiply(result.Map(Math.Log)) -
-                    (1 - labelmatrix).PointwiseMultiply(result.Map(d => Math.Log(1 - d)));
-                cost = tmpCost.RowSums().Sum();
-            }
-
-            // Calculate regularization term.
             var reg = 0.0;
             foreach (var weightVector in Network.Weights)
             {
@@ -120,13 +107,16 @@
                         .Sum();
             }
 
-            reg = reg*(lambda/(2* trainingData.Count()));
+            reg = lambda/2.0*reg;
 
-            return cost + reg;
+            return reg + ComputeCost(trainingData);
         }
 
-        public double ComputeDerivatives(IList<IDataset> trainingData)
+
+
+        public IList<Matrix<double>> ComputeDerivatives(IList<IDataset> trainingData)
         {
+            InitilizeLabelMatrices(trainingData);
             var deltaMatrices = InitilizeDeltaMatrices();
 
             foreach (var dataset in trainingData)
@@ -155,14 +145,7 @@
 
             Parallel.ForEach(deltaMatrices, matrix => matrix.Map(d => d/trainingData.Count));
 
-            var shapedMatrix = deltaMatrices[0].ToColumnWiseArray();
-            for (var i = 0; i < deltaMatrices.Count; i++)
-            {
-                var enumerable = shapedMatrix.Concat(deltaMatrices[i + 1].ToColumnWiseArray());
-            }
-
-
-            return 0.0;
+            return deltaMatrices;
         }
 
         private void InitilizeLabelMatrices(IEnumerable<IDataset> trainingData)
@@ -193,3 +176,37 @@
         public event EventHandler IterationFinished;
     }
 }
+
+
+//public double ComputeCostRegularized(double lambda, IList<IDataset> trainingData)
+//{
+//    // Calculate cost.
+//    InitilizeLabelMatrices(trainingData);
+
+//    var cost = 0.0;
+//    foreach (var dataset in trainingData)
+//    {
+//        var result = Network.ComputeOutput(dataset.Data);
+//        var labelmatrix = LabelMatrices[dataset.Label];
+
+//        var tmpCost =
+//            -labelmatrix.PointwiseMultiply(result.Map(Math.Log)) -
+//            (1 - labelmatrix).PointwiseMultiply(result.Map(d => Math.Log(1 - d)));
+//        cost = tmpCost.RowSums().Sum();
+//    }
+
+//    // Calculate regularization term.
+//    var reg = 0.0;
+//    foreach (var weightVector in Network.Weights)
+//    {
+//        reg +=
+//            weightVector.SubMatrix(0, weightVector.RowCount, 1, weightVector.ColumnCount - 1)
+//                .Map(d => Math.Pow(d, 2))
+//                .ColumnSums()
+//                .Sum();
+//    }
+
+//    reg = reg * (lambda / (2 * trainingData.Count()));
+
+//    return cost + reg;
+//}

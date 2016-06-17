@@ -15,7 +15,6 @@ namespace NeuronalNetSharp.Core
     {
         public static double TestNetwork(INeuronalNetwork network, IEnumerable<IDataset> data, IDictionary<string, Matrix> labelMatrices)
         {
-            var testResult = new NetworkTestResult();
             var t = 0.0;
             var f = 0.0;
 
