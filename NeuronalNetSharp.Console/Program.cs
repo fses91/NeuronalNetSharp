@@ -1,5 +1,4 @@
 ﻿using NeuronalNetSharp.Core;
-using NeuronalNetSharp.Core.LearningAlgorithms;
 
 namespace NeuronalNetSharp.Console
 {
@@ -9,9 +8,11 @@ namespace NeuronalNetSharp.Console
     using System.IO;
     using System.Linq;
     using Core.Interfaces;
+    using Core.Optimization;
     using Import;
     using MathNet.Numerics;
     using MathNet.Numerics.LinearAlgebra;
+    using MathNet.Numerics.LinearAlgebra.Single;
     using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
 
     internal class Program
@@ -27,22 +28,34 @@ namespace NeuronalNetSharp.Console
             var rawData = importer.ImportData(@"train-images-idx3-ubyte",
                 @"train-labels-idx1-ubyte").ToList();
 
-            var network = new NeuronalNetwork(784, 1, 10);
             //network.SetLayerSize(0, 10);
-            var backprob = new BackpropagationLearningAlgorithm(network);
+            //var backprob = new BackpropagationAlgorithm(network);
+            //var packer = new PackerTmp { Network = network, LearningAlgorithm = backprob, Datasets = rawData.Take(1000).ToList()};
+            //Console.WriteLine("Cost: " + backprob.ComputeCostRegularized(0.01, rawData.Take(100).ToList())); 
+            //Console.WriteLine("Cost: " + backprob.ComputeCostRegularized(0.01, rawData.Take(100).ToList()));
+
+            var data = rawData.Take(20).ToList();
+
+            INeuronalNetwork network =  new NeuronalNetwork(784, 1, 10);
+            var backprob = new BackpropagationAlgorithm();
+            var optimizer = new GradientDescentAlgorithm(0.01, 0.01);
+            network.SetLayerSize(0, 200);
+
+            network = optimizer.OptimizeNetwork(network, backprob, data, 1);
+
+            var grad1 = backprob.ComputeDerivatives(network, data);
+            var numGrad1 = backprob.ComputeNumericalGradients(network, data, backprob, 0.01);
+
+            network = optimizer.OptimizeNetwork(network, backprob, data, 2);
+
+            network = optimizer.OptimizeNetwork(network, backprob, data, 3);
+
+            network = optimizer.OptimizeNetwork(network, backprob, data, 4);
 
 
-            var packer = new PackerTmp { Network = network, LearningAlgorithm = backprob, Datasets = rawData.Take(1000).ToList()};
-
-            Console.WriteLine("Cost: " + backprob.ComputeCostRegularized(0.01, rawData.Take(100).ToList())); 
-            
 
 
-            
-            Console.WriteLine("Cost: " + backprob.ComputeCostRegularized(0.01, rawData.Take(100).ToList()));
-
-
-
+            var result = Visualizer.VisualizeNetwork(network, backprob, 0, 30, 28, 28, 1000, 500);
 
 
             double[] x = ShapeHelper.ShapeMatrices(network.Weights);
@@ -55,11 +68,10 @@ namespace NeuronalNetSharp.Console
 
             alglib.mincgcreate(x, out state);
             alglib.mincgsetcond(state, epsg, epsf, epsx, maxits);
-            alglib.mincgoptimize(state, function2_grad, null, packer);
+            //alglib.mincgoptimize(state, function2_grad, null, packer);
             alglib.mincgresults(state, out x, out rep);
-            
 
-            Console.WriteLine("Cost: " + backprob.ComputeCostRegularized(0.01, rawData.Take(100).ToList()));
+            //Console.WriteLine("Cost: " + backprob.ComputeCostRegularized(rawData.Take(100).ToList(), 0.01));
 
 
             //Console.WriteLine($"{rep.terminationtype}"); // EXPECTED: 4
@@ -81,13 +93,13 @@ namespace NeuronalNetSharp.Console
             grad[1] = 4*Math.Pow(x[1] - 3, 3);
         }
 
-        public static void function2_grad(double[] x, ref double func, double[] grad, object obj)
-        {
-            var packer = (PackerTmp) obj;
-            ShapeHelper.ReshapeAndSetMatrices(x, packer.Network.Weights);
-            grad = ShapeHelper.ShapeMatrices(packer.LearningAlgorithm.ComputeDerivatives(packer.Datasets));
-            func = packer.LearningAlgorithm.ComputeCostRegularized(0.01, packer.Datasets);
-        }
+        //public static void function2_grad(double[] x, ref double func, double[] grad, object obj)
+        //{
+        //    var packer = (PackerTmp) obj;
+        //    ShapeHelper.ReshapeAndSetMatrices(x, packer.Network.Weights);
+        //    grad = ShapeHelper.ShapeMatrices(packer.LearningAlgorithm.ComputeDerivatives(packer.Datasets));
+        //    func = packer.LearningAlgorithm.ComputeCostRegularized(0.01, packer.Datasets);
+        //}
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿namespace NeuronalNetSharp.WPF
 {
+    using System;
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
@@ -74,9 +75,9 @@
 
         private void VisualizeNodesButton_Click(object sender, RoutedEventArgs e)
         {
+            VisalizationListBox.Items.Clear();
             var model = (MainViewModel) DataContext;
-
-            var btmap = VisualizerTmp.VisualizeLayerGrayscale(model.Network.Weights[0], 28, 28);
+            var btmap = VisualizerTmp.VisualizeLayerGrayscale(model.Network.Weights[Convert.ToInt32(LayerToVisualizeTextBox.Text)], 28, 28);
 
             foreach (var imageSource in btmap)
                 VisalizationListBox.Items.Add(new Image {Source = imageSource, Width = 100, Height = 100});

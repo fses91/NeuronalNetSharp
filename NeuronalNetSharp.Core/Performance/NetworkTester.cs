@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NeuronalNetSharp.Core
+﻿namespace NeuronalNetSharp.Core.Performance
 {
-    using System.ComponentModel;
+    using System.Collections.Generic;
     using Import;
     using Interfaces;
     using MathNet.Numerics.LinearAlgebra.Double;
 
     public static class NetworkTester
     {
-        public static double TestNetwork(INeuronalNetwork network, IEnumerable<IDataset> data, IDictionary<string, Matrix> labelMatrices)
+        public static double TestNetwork(INeuronalNetwork network, IEnumerable<IDataset> data,
+            IDictionary<string, Matrix> labelMatrices)
         {
             var t = 0.0;
             var f = 0.0;
@@ -40,7 +35,7 @@ namespace NeuronalNetSharp.Core
                     f += 1.0;
             }
 
-            return f/(f+t);
+            return f/(f + t);
         }
     }
 }

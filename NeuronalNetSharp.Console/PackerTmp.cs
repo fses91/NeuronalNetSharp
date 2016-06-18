@@ -6,7 +6,7 @@
 
     public class PackerTmp
     {
-        public ILearningAlgorithm LearningAlgorithm { get; set; }
+        //public ILearningAlgorithm LearningAlgorithm { get; set; }
 
         public INeuronalNetwork Network { get; set; }
 

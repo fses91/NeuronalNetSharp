@@ -10,7 +10,8 @@
     using Core;
     using Core.EventArgs;
     using Core.Interfaces;
-    using Core.LearningAlgorithms;
+    using Core.Optimization;
+    using Core.Performance;
     using Import;
     using OxyPlot;
     using OxyPlot.Axes;
@@ -24,9 +25,12 @@
 
         public MainViewModel()
         {
+            Alpha = 0.0001;
+            Lambda = 0.0001;
+            Iterations = 100;
+
             Network = new NeuronalNetwork(784, 1, 10);
-            LearningAlgorithm = new BackpropagationLearningAlgorithm(Network);
-            LearningAlgorithm.IterationFinished += UpdateCostFunctionPlot;
+            BackpropagationAlgorithm = new BackpropagationAlgorithm();
 
             CostFunctionLineSeries = new LineSeries();
             CostFunctionPlotModel = new PlotModel
@@ -37,10 +41,6 @@
                     new LinearAxis {Position = AxisPosition.Bottom, Minimum = 0, Maximum = 120}
                 }
             };
-
-            Alpha = 0.01;
-            Lambda = 0.01;
-            Iterations = 100;
         }
 
         public double Alpha { get; set; }
@@ -79,9 +79,11 @@
 
         public double Lambda { get; set; }
 
-        public ILearningAlgorithm LearningAlgorithm { get; set; }
+        public IBackpropagation BackpropagationAlgorithm { get; set; }
 
         public INeuronalNetwork Network { get; set; }
+
+        public IOptimization Optimizer { get; set; }
 
         public int NumberOfHiddenLayers { get; set; }
 
@@ -113,29 +115,35 @@
         public void TrainNetwork()
         {
             Network = new NeuronalNetwork(InputLayerSize, NumberOfHiddenLayers, OutputLayerSize);
-            Network.SetLayerSize(0, 1000);
-            LearningAlgorithm.Network = Network;
+            //Network.SetLayerSize(0, 1000);
 
             if (TrainingTask == null || TrainingTask.IsCompleted)
             {
                 TrainingTask =
                     Task.Run(
                         () =>
-                            LearningAlgorithm.TrainNetwork(Iterations, Alpha, Lambda,
-                                TrainingData.Take(TraingDataToUse).ToList()));
+                        {
+                            Optimizer = new GradientDescentAlgorithm(Lambda, Alpha);
+                            Optimizer.IterationFinished += UpdateCostFunctionPlot;
+                            Optimizer.OptimizeNetwork(Network, BackpropagationAlgorithm,
+                                TrainingData.Take(TraingDataToUse).ToList(), Iterations);
+                        });
             }
         }
 
         public void TestNetwork()
         {
-            TestError = NetworkTester.TestNetwork(LearningAlgorithm.Network, TrainingData.Take(TraingDataToUse),
-                LearningAlgorithm.LabelMatrices);
+            TestError = NetworkTester.TestNetwork(
+                Network, 
+                TrainingData.Take(TraingDataToUse),
+                Core.BackpropagationAlgorithm.GetLabelMatrices(TrainingData.Take(TraingDataToUse)));
         }
 
         public void TestNetworkWithCrossValidation()
         {
-            CrossValidationError = NetworkTester.TestNetwork(LearningAlgorithm.Network,
-                TrainingData.Skip(TraingDataToUse).Take(CrossValidationDataToUse), LearningAlgorithm.LabelMatrices);
+            CrossValidationError = NetworkTester.TestNetwork(Network,
+                TrainingData.Skip(TraingDataToUse).Take(CrossValidationDataToUse), 
+                Core.BackpropagationAlgorithm.GetLabelMatrices(TrainingData.Take(TraingDataToUse)));
         }
 
         public void UpdateCostFunctionPlot(object sender, EventArgs e)
