@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.Import", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.WPF", "NeuronalNetSharp.WPF\NeuronalNetSharp.WPF.csproj", "{0AB071F4-02EA-4856-B14E-CB614BC7C00C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{F0E8610D-D4C6-4E75-BF05-091C28265C5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
