@@ -44,13 +44,13 @@
         {
             var model = (MainViewModel) DataContext;
 
-            if (model?.TrainingData == null ||
-                !model.TrainingData.Any())
-            {
+            if (model?.Network == null)
+                MessageBox.Show(this, "Not network was loaded");
+
+            if (model?.TrainingData == null || !model.TrainingData.Any())
                 MessageBox.Show(this, "No training data was loaded.", ContentStringFormat, MessageBoxButton.OK);
-                return;
-            }
-            model.TrainNetwork();
+
+            model?.TrainNetwork();
         }
 
         private void TestNetworkButton_Click(object sender, RoutedEventArgs e)
@@ -82,6 +82,12 @@
 
             foreach (var imageSource in btmap)
                 VisalizationListBox.Items.Add(new Image {Source = imageSource, Width = 100, Height = 100});
+        }
+
+        private void CreateNewNetworkButton_Click(object sender, RoutedEventArgs e)
+        {
+            var model = (MainViewModel) DataContext;
+            model.CreateNewNetwork();
         }
     }
 }

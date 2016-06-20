@@ -74,6 +74,7 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -86,7 +87,8 @@
                     <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Alpha}"></TextBox>
                     <Label Grid.Row="2" Grid.Column="0"  Width="auto">Lambda:</Label>
                     <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Lambda}"></TextBox>
-                    <Button Name="TrainNetwork" Grid.Row="3" Grid.Column="1" Margin="0,5,0,0" Click="TrainNetwork_Click">Train Network</Button>
+                    <Button Name="CreateNewNetworkButton" Grid.Row="3" Grid.Column="1" Click="CreateNewNetworkButton_Click">Create New Network</Button>
+                    <Button Name="TrainNetwork" Grid.Row="4" Grid.Column="1" Margin="0,5,0,0" Click="TrainNetwork_Click">Train Network</Button>
                 </Grid>
             </GroupBox>
             <GroupBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Header="Training data">

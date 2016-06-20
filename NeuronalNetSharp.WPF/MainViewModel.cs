@@ -1,22 +1,22 @@
-﻿namespace NeuronalNetSharp.WPF
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
-    using Annotations;
-    using Core;
-    using Core.EventArgs;
-    using Core.Interfaces;
-    using Core.Optimization;
-    using Core.Performance;
-    using Import;
-    using OxyPlot;
-    using OxyPlot.Axes;
-    using OxyPlot.Series;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using NeuronalNetSharp.Core;
+using NeuronalNetSharp.Core.EventArgs;
+using NeuronalNetSharp.Core.Interfaces;
+using NeuronalNetSharp.Core.Optimization;
+using NeuronalNetSharp.Core.Performance;
+using NeuronalNetSharp.Import;
+using NeuronalNetSharp.WPF.Annotations;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 
+namespace NeuronalNetSharp.WPF
+{
     public class MainViewModel : INotifyPropertyChanged
     {
         private PlotModel _costFunctionPlotModel;
@@ -75,6 +75,8 @@
 
         public int InputLayerSize { get; set; }
 
+        public int IterationCount { get; set; }
+
         public int Iterations { get; set; }
 
         public double Lambda { get; set; }
@@ -112,29 +114,34 @@
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void TrainNetwork()
+        public void CreateNewNetwork()
         {
             Network = new NeuronalNetwork(InputLayerSize, NumberOfHiddenLayers, OutputLayerSize);
             Network.SetLayerSize(0, 25);
+            IterationCount = 0;
+        }
+
+        public void TrainNetwork()
+        {
+            if(Network == null)
+                throw new NullReferenceException("Network is null");
 
             if (TrainingTask == null || TrainingTask.IsCompleted)
             {
-                TrainingTask =
-                    Task.Run(
-                        () =>
-                        {
-                            Optimizer = new GradientDescentAlgorithm(Lambda, Alpha);
-                            Optimizer.IterationFinished += UpdateCostFunctionPlot;
-                            Optimizer.OptimizeNetwork(Network, BackpropagationAlgorithm,
-                                TrainingData.Take(TraingDataToUse).ToList(), Iterations);
-                        });
+                TrainingTask = Task.Run(() =>
+                {
+                    Optimizer = new GradientDescentAlgorithm(Lambda, Alpha);
+                    Optimizer.IterationFinished += UpdateCostFunctionPlot;
+                    Optimizer.OptimizeNetwork(Network, BackpropagationAlgorithm,
+                        TrainingData.Take(TraingDataToUse).ToList(), Iterations);
+                });
             }
         }
 
         public void TestNetwork()
         {
             TestError = NetworkTester.TestNetwork(
-                Network, 
+                Network,
                 TrainingData.Take(TraingDataToUse),
                 Core.BackpropagationAlgorithm.GetLabelMatrices(TrainingData.Take(TraingDataToUse)));
         }
@@ -142,26 +149,24 @@
         public void TestNetworkWithCrossValidation()
         {
             CrossValidationError = NetworkTester.TestNetwork(Network,
-                TrainingData.Skip(TraingDataToUse).Take(CrossValidationDataToUse), 
+                TrainingData.Skip(TraingDataToUse).Take(CrossValidationDataToUse),
                 Core.BackpropagationAlgorithm.GetLabelMatrices(TrainingData.Take(TraingDataToUse)));
         }
 
         public void UpdateCostFunctionPlot(object sender, EventArgs e)
         {
             var args = (IterationFinishedEventArgs) e;
-            CostFunctionLineSeries.Points.Add(new DataPoint(args.Iteration, args.Cost));
-
             var plotModel = new PlotModel();
-            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Left, Minimum = 0, Maximum = args.Cost + 5});
-            plotModel.Axes.Add(new LinearAxis
-            {
-                Position = AxisPosition.Bottom,
-                Minimum = 0,
-                Maximum = args.Iteration + 10
-            });
+
+            CostFunctionLineSeries.Points.Add(new DataPoint(IterationCount, args.Cost));
+
+            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Left, Minimum = 0, Maximum = args.Cost + 2});
+            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Bottom, Minimum = 0, Maximum = IterationCount + 40});
+
             CostFunctionPlotModel.Series.Clear();
             plotModel.Series.Add(CostFunctionLineSeries);
             CostFunctionPlotModel = plotModel;
+            IterationCount++;
         }
 
         [NotifyPropertyChangedInvocator]
