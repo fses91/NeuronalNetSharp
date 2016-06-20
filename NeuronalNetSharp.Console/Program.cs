@@ -21,12 +21,19 @@ namespace NeuronalNetSharp.Console
 
         private static void Main()
         {
+            var testan = new double[] {4, 3, 6, 3};
+
+            string path = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory()))) + @"\data";
+
+
+
+
             Control.LinearAlgebraProvider = new MklLinearAlgebraProvider();
             Control.UseNativeMKL();
 
-            var importer = new MinstImporter();
-            var rawData = importer.ImportData(@"train-images-idx3-ubyte",
-                @"train-labels-idx1-ubyte").ToList();
+            var importer = new MinstSmallImporter();
+            var rawData = importer.ImportData(path + @"\trainingData.csv",
+                path +  @"\labelData.csv").ToList();
 
             //network.SetLayerSize(0, 10);
             //var backprob = new BackpropagationAlgorithm(network);
@@ -40,10 +47,15 @@ namespace NeuronalNetSharp.Console
             var backprob = new BackpropagationAlgorithm();
             var optimizer = new GradientDescentAlgorithm(0.01, 0.01);
             network.SetLayerSize(0, 200);
-
             network = optimizer.OptimizeNetwork(network, backprob, data, 1);
 
-            var grad1 = backprob.ComputeDerivatives(network, data);
+
+            //var result = Visualizer.VisualizeNetworkLayer(network, backprob, 0, 30, 28, 28, 500);
+
+
+
+
+            //var grad1 = backprob.ComputeDerivatives(network, data);
             var numGrad1 = backprob.ComputeNumericalGradients(network, data, backprob, 0.01);
 
             network = optimizer.OptimizeNetwork(network, backprob, data, 2);
@@ -55,7 +67,6 @@ namespace NeuronalNetSharp.Console
 
 
 
-            var result = Visualizer.VisualizeNetwork(network, backprob, 0, 30, 28, 28, 1000, 500);
 
 
             double[] x = ShapeHelper.ShapeMatrices(network.Weights);

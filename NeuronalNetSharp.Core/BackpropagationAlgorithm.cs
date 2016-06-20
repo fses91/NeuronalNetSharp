@@ -114,6 +114,8 @@
                 var tmpDeltaVectors = new List<Matrix<double>>();
                 var output = network.ComputeOutput(dataset.Data);
                 var deltaLast = output - labelMatrices[dataset.Label];
+                //-(labelMatrices[dataset.Label] - output).PointwiseMultiply(output.PointwiseMultiply(1 - output));
+
                 tmpDeltaVectors.Add(deltaLast);
 
                 for (var j = network.Weights.Count - 1; j >= 1; j--)
@@ -125,6 +127,7 @@
                     tmpDeltaVectors.Add(delta.SubMatrix(1, delta.RowCount - 1, 0, delta.ColumnCount));
                 }
 
+                // For the input layer.
                 tmpDeltaVectors.Reverse();
                 deltaMatrices[0] = deltaMatrices[0] +
                                    tmpDeltaVectors[0]*DenseMatrix.Create(1, 1, 1).Append(dataset.Data.Transpose());

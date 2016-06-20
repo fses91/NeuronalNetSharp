@@ -26,7 +26,7 @@
         }
 
         public int NumberOfHiddenLayers { get; }
-
+        
         public Matrix<double> ComputeOutput(Matrix<double> input)
         {
             var currentLayer = DenseMatrix.Create(1, 1, 1).Append(input.Transpose()).Transpose();
@@ -41,8 +41,8 @@
                 currentLayer = HiddenLayers[i];
             }
 
-            var outputLayer = Weights.Last()*HiddenLayers.Last();
-            return outputLayer.Map(SpecialFunctions.Logistic);
+            var outputlayer = Weights.Last()*HiddenLayers.Last();
+            return outputlayer.Map(SpecialFunctions.Logistic);
         }
 
         public IList<Matrix<double>> HiddenLayers { get; }

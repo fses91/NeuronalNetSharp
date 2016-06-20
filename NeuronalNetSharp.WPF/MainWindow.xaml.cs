@@ -36,7 +36,7 @@
 
             labelFile = openFileDialog.FileName;
 
-            var importer = new MinstImporter();
+            var importer = new MinstSmallImporter();
             ((MainViewModel) DataContext).TrainingData = importer.ImportData(dataFile, labelFile);
         }
 
@@ -77,7 +77,8 @@
         {
             VisalizationListBox.Items.Clear();
             var model = (MainViewModel) DataContext;
-            var btmap = VisualizerTmp.VisualizeLayerGrayscale(model.Network.Weights[Convert.ToInt32(LayerToVisualizeTextBox.Text)], 28, 28);
+            var btmap = VisualizerTmp.VisualizeLayerGrayscale(model.Network.Weights[Convert.ToInt32(LayerToVisualizeTextBox.Text)], 20, 20);
+            //var btmap = VisualizerTmp.VisualizeLayerGrayscale(model.Network, model.BackpropagationAlgorithm, Convert.ToInt32(LayerToVisualizeTextBox.Text), 28, 28, 10);
 
             foreach (var imageSource in btmap)
                 VisalizationListBox.Items.Add(new Image {Source = imageSource, Width = 100, Height = 100});
