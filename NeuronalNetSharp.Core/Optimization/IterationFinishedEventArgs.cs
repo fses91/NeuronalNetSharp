@@ -1,4 +1,4 @@
-﻿namespace NeuronalNetSharp.Core.EventArgs
+﻿namespace NeuronalNetSharp.Core.Optimization
 {
     using System;
 

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NeuronalNetSharp.Core;
-using NeuronalNetSharp.Core.EventArgs;
 using NeuronalNetSharp.Core.Interfaces;
 using NeuronalNetSharp.Core.Optimization;
 using NeuronalNetSharp.Core.Performance;
@@ -139,14 +138,14 @@ namespace NeuronalNetSharp.WPF
             TestError = NetworkTester.TestNetwork(
                 Network,
                 TrainingData.Take(TraingDataToUse),
-                Core.BackpropagationAlgorithm.GetLabelMatrices(TrainingData.Take(TraingDataToUse)));
+                Core.HelperFunctions.GetLabelMatrices(TrainingData.Take(TraingDataToUse)));
         }
 
         public void TestNetworkWithCrossValidation()
         {
             CrossValidationError = NetworkTester.TestNetwork(Network,
                 TrainingData.Skip(TraingDataToUse).Take(CrossValidationDataToUse),
-                Core.BackpropagationAlgorithm.GetLabelMatrices(TrainingData.Take(TraingDataToUse)));
+                Core.HelperFunctions.GetLabelMatrices(TrainingData.Take(TraingDataToUse)));
         }
 
         public void UpdateCostFunctionPlot(object sender, EventArgs e)

@@ -2,9 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using EventArgs;
     using Import;
     using Interfaces;
 
@@ -16,14 +14,13 @@
             Alpha = alpha;
         }
 
-        public double Lambda { get; set; }
-
         public double Alpha { get; set; }
 
-        public INeuronalNetwork OptimizeNetwork(
-            INeuronalNetwork network,
-            IList<IDataset> traingData,
-            int iterations)
+        public double Lambda { get; set; }
+
+        public event EventHandler IterationFinished;
+
+        public INeuronalNetwork OptimizeNetwork(INeuronalNetwork network, IList<IDataset> traingData, int iterations)
         {
             for (var i = 0; i < iterations; i++)
             {
@@ -31,7 +28,7 @@
 
                 Parallel.For(0, deltaMatrices.Count, j =>
                 {
-                    network.Weights[j] = network.Weights[j] - Alpha * deltaMatrices[j];
+                    network.Weights[j] = network.Weights[j] - Alpha*deltaMatrices[j];
 
                     var subDelta =
                         deltaMatrices[j].SubMatrix(0, network.Weights[j].RowCount, 1, network.Weights[j].ColumnCount - 1)
@@ -45,16 +42,13 @@
                 IterationFinished?.Invoke(this,
                     new IterationFinishedEventArgs
                     {
-                        Cost =  network.ComputeCost(traingData, Lambda),
+                        Cost = network.ComputeCost(traingData, Lambda),
                         Iteration = i
                     });
             }
 
-            //var test = backpropagation.ComputeNumericalGradients(network, traingData, backpropagation, Lambda);
 
             return network;
         }
-
-        public event EventHandler IterationFinished;
     }
 }

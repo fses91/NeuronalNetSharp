@@ -1,4 +1,4 @@
-﻿namespace NeuronalNetSharp.Core
+﻿namespace NeuronalNetSharp.Core.Optimization
 {
     using System;
     using System.Collections.Generic;

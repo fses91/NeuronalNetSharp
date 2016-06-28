@@ -1,4 +1,4 @@
-﻿namespace NeuronalNetSharp.Core
+﻿namespace NeuronalNetSharp.Core.Interfaces
 {
     using System;
     using System.Collections.Concurrent;
@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Import;
-    using Interfaces;
     using MathNet.Numerics;
     using MathNet.Numerics.Distributions;
     using MathNet.Numerics.LinearAlgebra;
@@ -129,9 +128,6 @@
 
         public IList<Matrix<double>> Weights { get; set; }
 
-        /// <summary>
-        ///     Initialize Layers.
-        /// </summary>
         public void InitializeLayers()
         {
             for (var i = 0; i < NumberOfHiddenLayers; i++)
