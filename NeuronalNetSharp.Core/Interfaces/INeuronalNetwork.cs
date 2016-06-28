@@ -8,6 +8,8 @@ using MathNet.Numerics.LinearAlgebra;
 namespace NeuronalNetSharp.Core.Interfaces
 {
     using System.Runtime.Serialization;
+    using Import;
+
     public interface INeuronalNetwork
     {
         int SizeInputLayer { get; }
@@ -21,5 +23,9 @@ namespace NeuronalNetSharp.Core.Interfaces
         Matrix<double> ComputeOutput(Matrix<double> input);
 
         void SetLayerSize(int layer, int size);
+
+        double ComputeCost(IList<IDataset> trainingData, double lambda);
+
+        IList<Matrix<double>> ComputeGradients(IList<IDataset> trainingData, double lambda);
     }
 }

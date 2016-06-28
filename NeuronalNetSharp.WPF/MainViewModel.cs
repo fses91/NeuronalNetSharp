@@ -30,7 +30,6 @@ namespace NeuronalNetSharp.WPF
             Iterations = 100;
 
             Network = new NeuronalNetwork(784, 1, 10);
-            BackpropagationAlgorithm = new BackpropagationAlgorithm();
 
             CostFunctionLineSeries = new LineSeries();
             CostFunctionPlotModel = new PlotModel
@@ -81,8 +80,6 @@ namespace NeuronalNetSharp.WPF
 
         public double Lambda { get; set; }
 
-        public IBackpropagation BackpropagationAlgorithm { get; set; }
-
         public INeuronalNetwork Network { get; set; }
 
         public IOptimization Optimizer { get; set; }
@@ -132,8 +129,7 @@ namespace NeuronalNetSharp.WPF
                 {
                     Optimizer = new GradientDescentAlgorithm(Lambda, Alpha);
                     Optimizer.IterationFinished += UpdateCostFunctionPlot;
-                    Optimizer.OptimizeNetwork(Network, BackpropagationAlgorithm,
-                        TrainingData.Take(TraingDataToUse).ToList(), Iterations);
+                    Optimizer.OptimizeNetwork(Network, TrainingData.Take(TraingDataToUse).ToList(), Iterations);
                 });
             }
         }

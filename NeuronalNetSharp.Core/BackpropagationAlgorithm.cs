@@ -22,10 +22,10 @@
             {
                 var difference = network.ComputeOutput(dataset.Data) - labelMatrices[dataset.Label];
                 var norm = difference.CalculateNorm();
-                result += 1.0/2.0*Math.Pow(norm, 2);
+                result += 1.0 / 2.0 * Math.Pow(norm, 2);
             }
 
-            return result/trainingData.Count;
+            return result / trainingData.Count;
         }
 
         public double ComputeCostRegularized(INeuronalNetwork network, IList<IDataset> trainingData, double lambda)

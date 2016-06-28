@@ -22,13 +22,12 @@
 
         public INeuronalNetwork OptimizeNetwork(
             INeuronalNetwork network,
-            IBackpropagation backpropagation,
             IList<IDataset> traingData,
             int iterations)
         {
             for (var i = 0; i < iterations; i++)
             {
-                var deltaMatrices = backpropagation.ComputeDerivatives(network, traingData);
+                var deltaMatrices = network.ComputeGradients(traingData, Lambda);
 
                 Parallel.For(0, deltaMatrices.Count, j =>
                 {
@@ -46,7 +45,7 @@
                 IterationFinished?.Invoke(this,
                     new IterationFinishedEventArgs
                     {
-                        Cost = backpropagation.ComputeCostRegularized(network, traingData, Lambda),
+                        Cost =  network.ComputeCost(traingData, Lambda),
                         Iteration = i
                     });
             }

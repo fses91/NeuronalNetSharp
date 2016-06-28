@@ -47,7 +47,7 @@ namespace NeuronalNetSharp.Console
             var backprob = new BackpropagationAlgorithm();
             var optimizer = new GradientDescentAlgorithm(0.01, 0.01);
             network.SetLayerSize(0, 200);
-            network = optimizer.OptimizeNetwork(network, backprob, data, 1);
+            network = optimizer.OptimizeNetwork(network, data, 1);
 
 
             //var result = Visualizer.VisualizeNetworkLayer(network, backprob, 0, 30, 28, 28, 500);
@@ -58,11 +58,11 @@ namespace NeuronalNetSharp.Console
             //var grad1 = backprob.ComputeDerivatives(network, data);
             var numGrad1 = backprob.ComputeNumericalGradients(network, data, backprob, 0.01);
 
-            network = optimizer.OptimizeNetwork(network, backprob, data, 2);
+            network = optimizer.OptimizeNetwork(network, data, 2);
 
-            network = optimizer.OptimizeNetwork(network, backprob, data, 3);
+            network = optimizer.OptimizeNetwork(network, data, 3);
 
-            network = optimizer.OptimizeNetwork(network, backprob, data, 4);
+            network = optimizer.OptimizeNetwork(network, data, 4);
 
 
 

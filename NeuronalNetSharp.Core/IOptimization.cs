@@ -9,7 +9,6 @@
     {
         INeuronalNetwork OptimizeNetwork(
             INeuronalNetwork network, 
-            IBackpropagation backpropagation,
             IList<IDataset> traingData,
             int iterations);
 
