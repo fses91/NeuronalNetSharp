@@ -1,4 +1,5 @@
 ﻿using NeuronalNetSharp.Core;
+using NeuronalNetSharp.Core.NeuronalNetwork;
 
 namespace NeuronalNetSharp.Console
 {
@@ -7,7 +8,6 @@ namespace NeuronalNetSharp.Console
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using Core.Interfaces;
     using Core.Optimization;
     using Import;
     using MathNet.Numerics;
@@ -43,30 +43,25 @@ namespace NeuronalNetSharp.Console
 
             var data = rawData.Take(20).ToList();
 
-            INeuronalNetwork network =  new NeuronalNetwork(784, 1, 10);
-            //var backprob = new BackpropagationAlgorithm();
-            var optimizer = new GradientDescentAlgorithm(0.01, 0.01);
-            network.SetLayerSize(0, 200);
-            network = optimizer.OptimizeNetwork(network, data, 1);
+            //INeuronalNetwork network =  new NeuronalNetwork(784, 1, 10);
+            ////var backprob = new BackpropagationAlgorithm();
+            ////var optimizer = new GradientDescentAlgorithm(0.01, 0.01);
+            //network.SetLayerSize(0, 200);
+            //network = optimizer.OptimizeNetwork(network, data, 1);
+            ////var result = Visualizer.VisualizeNetworkLayer(network, backprob, 0, 30, 28, 28, 500);
+            ////var grad1 = backprob.ComputeDerivatives(network, data);
+            ////var numGrad1 = /*backprob*/.ComputeNumericalGradients(network, data, backprob, 0.01);
+            //network = optimizer.OptimizeNetwork(network, data, 2);
+            //network = optimizer.OptimizeNetwork(network, data, 3);
+            //network = optimizer.OptimizeNetwork(network, data, 4);
 
+            var network = new NewNeuronalNetwork(400, 10, 1);
 
-            //var result = Visualizer.VisualizeNetworkLayer(network, backprob, 0, 30, 28, 28, 500);
-
-
-
-
-            //var grad1 = backprob.ComputeDerivatives(network, data);
-            //var numGrad1 = /*backprob*/.ComputeNumericalGradients(network, data, backprob, 0.01);
-
-            network = optimizer.OptimizeNetwork(network, data, 2);
-
-            network = optimizer.OptimizeNetwork(network, data, 3);
-
-            network = optimizer.OptimizeNetwork(network, data, 4);
-
-
-
-
+            var test = network.ComputeOutput(rawData.FirstOrDefault().Data);
+            var labelMatrices = HelperFunctions.GetLabelMatrices(rawData);
+         
+            var k = Functions.SigmoidFunction(-0.23213321);
+            var n = network.ComputeCostResultSet(rawData, labelMatrices, 0.01);
 
 
             double[] x = null;

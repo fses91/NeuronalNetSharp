@@ -58,13 +58,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Functions.cs" />
+    <Compile Include="NeuronalNetwork\CostResultSet.cs" />
+    <Compile Include="NeuronalNetwork\NewNeuronalNetwork.cs" />
     <Compile Include="Optimization\IterationFinishedEventArgs.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Interfaces\INeuronalNetwork.cs" />
+    <Compile Include="NeuronalNetwork\INeuronalNetwork.cs" />
     <Compile Include="HelperFunctions.cs" />
     <Compile Include="Optimization\IOptimization.cs" />
     <Compile Include="Performance\NetworkTester.cs" />
-    <Compile Include="Interfaces\NeuronalNetwork.cs" />
+    <Compile Include="NeuronalNetwork\NeuronalNetwork.cs" />
     <Compile Include="Optimization\GradientDescentAlgorithm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

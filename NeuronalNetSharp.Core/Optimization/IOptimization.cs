@@ -1,9 +1,10 @@
-﻿namespace NeuronalNetSharp.Core.Optimization
+﻿using NeuronalNetSharp.Core.NeuronalNetwork;
+
+namespace NeuronalNetSharp.Core.Optimization
 {
     using System;
     using System.Collections.Generic;
     using Import;
-    using Interfaces;
 
     public interface IOptimization
     {

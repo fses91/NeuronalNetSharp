@@ -1,8 +1,9 @@
-﻿namespace NeuronalNetSharp.Core.Performance
+﻿using NeuronalNetSharp.Core.NeuronalNetwork;
+
+namespace NeuronalNetSharp.Core.Performance
 {
     using System.Collections.Generic;
     using Import;
-    using Interfaces;
     using MathNet.Numerics.LinearAlgebra.Double;
 
     public static class NetworkTester

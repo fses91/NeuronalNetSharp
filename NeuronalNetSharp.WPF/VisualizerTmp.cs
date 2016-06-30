@@ -6,7 +6,6 @@
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using Core;
-    using Core.Interfaces;
     using MathNet.Numerics.LinearAlgebra;
 
     public static class VisualizerTmp

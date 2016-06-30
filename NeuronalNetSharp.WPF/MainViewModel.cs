@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NeuronalNetSharp.Core;
-using NeuronalNetSharp.Core.Interfaces;
+using NeuronalNetSharp.Core.NeuronalNetwork;
 using NeuronalNetSharp.Core.Optimization;
 using NeuronalNetSharp.Core.Performance;
 using NeuronalNetSharp.Import;

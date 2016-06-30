@@ -1,7 +1,8 @@
-﻿namespace NeuronalNetSharp.Console
+﻿using NeuronalNetSharp.Core.NeuronalNetwork;
+
+namespace NeuronalNetSharp.Console
 {
     using System.Collections.Generic;
-    using Core.Interfaces;
     using Import;
 
     public class PackerTmp

@@ -1,4 +1,4 @@
-﻿namespace NeuronalNetSharp.Core.Interfaces
+﻿namespace NeuronalNetSharp.Core.NeuronalNetwork
 {
     using System;
     using System.Collections.Concurrent;
@@ -11,7 +11,7 @@
     using MathNet.Numerics.LinearAlgebra;
     using MathNet.Numerics.LinearAlgebra.Double;
 
-    public class NeuronalNetwork : INeuronalNetwork
+    public class NeuronalNetwork
     {
         public NeuronalNetwork(int sizeInputLayer, int amountHiddenLayers, int sizeOutputLayer)
         {
