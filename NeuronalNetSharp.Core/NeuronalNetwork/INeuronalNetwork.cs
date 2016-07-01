@@ -13,11 +13,13 @@
 
         int NumberOfHiddenLayers { get; }
 
+        IList<Matrix<double>> BiasWeights { get; }
+
         IList<Matrix<double>> Weights { get; }
 
         IList<Matrix<double>> Layers { get; }
 
-        CostResultSet ComputeCostResultSet(IList<IDataset> trainingData, IDictionary<string, Matrix> results, double lambda);
+        CostResultSet ComputeCostResultSet(IList<IDataset> trainingData, IDictionary<string, Matrix<double>> results, double lambda);
 
         Matrix<double> ComputeOutput(Matrix<double> input);
 

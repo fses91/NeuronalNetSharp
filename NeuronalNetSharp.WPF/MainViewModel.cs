@@ -16,6 +16,8 @@ using OxyPlot.Series;
 
 namespace NeuronalNetSharp.WPF
 {
+    using MathNet.Numerics.LinearAlgebra;
+
     public class MainViewModel : INotifyPropertyChanged
     {
         private PlotModel _costFunctionPlotModel;
@@ -27,8 +29,6 @@ namespace NeuronalNetSharp.WPF
             Alpha = 0.0001;
             Lambda = 0.0001;
             Iterations = 100;
-
-            Network = new NeuronalNetwork(784, 1, 10);
 
             CostFunctionLineSeries = new LineSeries();
             CostFunctionPlotModel = new PlotModel
@@ -79,6 +79,8 @@ namespace NeuronalNetSharp.WPF
 
         public double Lambda { get; set; }
 
+        public IDictionary<string, Matrix<double>> Results { get; set; }
+
         public INeuronalNetwork Network { get; set; }
 
         public IOptimization Optimizer { get; set; }
@@ -112,8 +114,8 @@ namespace NeuronalNetSharp.WPF
 
         public void CreateNewNetwork()
         {
-            Network = new NeuronalNetwork(InputLayerSize, NumberOfHiddenLayers, OutputLayerSize);
-            Network.SetLayerSize(0, 25);
+            Network = new NeuronalNetwork(InputLayerSize, OutputLayerSize, NumberOfHiddenLayers, Lambda);
+            Network.SetLayerSize(1, 25);
             IterationCount = 0;
         }
 
@@ -128,7 +130,7 @@ namespace NeuronalNetSharp.WPF
                 {
                     Optimizer = new GradientDescentAlgorithm(Lambda, Alpha);
                     Optimizer.IterationFinished += UpdateCostFunctionPlot;
-                    Optimizer.OptimizeNetwork(Network, TrainingData.Take(TraingDataToUse).ToList(), Iterations);
+                    Optimizer.OptimizeNetwork(Network, TrainingData.ToList(), HelperFunctions.GetLabelMatrices(TrainingData), Iterations);
                 });
             }
         }
@@ -138,14 +140,14 @@ namespace NeuronalNetSharp.WPF
             TestError = NetworkTester.TestNetwork(
                 Network,
                 TrainingData.Take(TraingDataToUse),
-                Core.HelperFunctions.GetLabelMatrices(TrainingData.Take(TraingDataToUse)));
+                Results);
         }
 
         public void TestNetworkWithCrossValidation()
         {
             CrossValidationError = NetworkTester.TestNetwork(Network,
                 TrainingData.Skip(TraingDataToUse).Take(CrossValidationDataToUse),
-                Core.HelperFunctions.GetLabelMatrices(TrainingData.Take(TraingDataToUse)));
+                Results);
         }
 
         public void UpdateCostFunctionPlot(object sender, EventArgs e)

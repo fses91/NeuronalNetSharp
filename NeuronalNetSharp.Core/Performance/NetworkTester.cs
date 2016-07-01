@@ -4,12 +4,13 @@ namespace NeuronalNetSharp.Core.Performance
 {
     using System.Collections.Generic;
     using Import;
+    using MathNet.Numerics.LinearAlgebra;
     using MathNet.Numerics.LinearAlgebra.Double;
 
     public static class NetworkTester
     {
         public static double TestNetwork(INeuronalNetwork network, IEnumerable<IDataset> data,
-            IDictionary<string, Matrix> labelMatrices)
+            IDictionary<string, Matrix<double>> labelMatrices)
         {
             var t = 0.0;
             var f = 0.0;

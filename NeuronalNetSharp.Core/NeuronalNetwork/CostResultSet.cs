@@ -7,6 +7,7 @@
     {
         public double Cost { get; set; }
 
-        public IList<Matrix<double>> Gradients { get; set; }
+        
+        public GradientResultSet Gradients { get; set; }
     }
 }

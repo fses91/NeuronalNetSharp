@@ -1,55 +1,48 @@
-﻿//using NeuronalNetSharp.Core.NeuronalNetwork;
+﻿using NeuronalNetSharp.Core.NeuronalNetwork;
 
-//namespace NeuronalNetSharp.Core.Optimization
-//{
-//    using System;
-//    using System.Collections.Generic;
-//    using System.Threading.Tasks;
-//    using Import;
+namespace NeuronalNetSharp.Core.Optimization
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Import;
+    using MathNet.Numerics.LinearAlgebra;
 
-//    public class GradientDescentAlgorithm : IOptimization
-//    {
-//        public GradientDescentAlgorithm(double lambda, double alpha)
-//        {
-//            Lambda = lambda;
-//            Alpha = alpha;
-//        }
+    public class GradientDescentAlgorithm : IOptimization
+    {
+        public GradientDescentAlgorithm(double lambda, double alpha)
+        {
+            Lambda = lambda;
+            Alpha = alpha;
+        }
 
-//        public double Alpha { get; set; }
+        public double Alpha { get; set; }
 
-//        public double Lambda { get; set; }
+        public double Lambda { get; set; }
 
-//        public event EventHandler IterationFinished;
+        public event EventHandler IterationFinished;
 
-//        public INeuronalNetwork OptimizeNetwork(INeuronalNetwork network, IList<IDataset> traingData, int iterations)
-//        {
-//            for (var i = 0; i < iterations; i++)
-//            {
-//                var deltaMatrices = network.ComputeGradients(traingData, Lambda);
+        public INeuronalNetwork OptimizeNetwork(INeuronalNetwork network, IList<IDataset> traingData, IDictionary<string, Matrix<double>> results, int iterations)
+        {
+            for (var i = 0; i < iterations; i++)
+            {
+                var cost = network.ComputeCostResultSet(traingData, results, Lambda);
 
-//                Parallel.For(0, deltaMatrices.Count, j =>
-//                {
-//                    network.Weights[j] = network.Weights[j] - Alpha*deltaMatrices[j];
+                Parallel.For(0, network.Weights.Count, i1 =>
+                {
+                    network.Weights[i1] = network.Weights[i1] - Alpha*cost.Gradients.Gradients[i1];
+                    network.BiasWeights[i1] = network.BiasWeights[i1] - Alpha*cost.Gradients.BiasGradients[i1];
+                });
 
-//                    var subDelta =
-//                        deltaMatrices[j].SubMatrix(0, network.Weights[j].RowCount, 1, network.Weights[j].ColumnCount - 1)
-//                            .Map(d => Lambda/traingData.Count*d);
-//                    var subWeights = network.Weights[j].SubMatrix(0, network.Weights[j].RowCount, 1,
-//                        network.Weights[j].ColumnCount - 1);
-//                    network.Weights[j].SetSubMatrix(0, network.Weights[j].RowCount, 1,
-//                        network.Weights[j].ColumnCount - 1, subWeights + subDelta);
-//                });
+                IterationFinished?.Invoke(this,
+                    new IterationFinishedEventArgs
+                    {
+                        Cost = network.ComputeCostResultSet(traingData, results ,Lambda).Cost,
+                        Iteration = i
+                    });
+            }
 
-//                IterationFinished?.Invoke(this,
-//                    new IterationFinishedEventArgs
-//                    {
-//                        Cost = network.ComputeCost(traingData, Lambda),
-//                        Iteration = i
-//                    });
-//            }
-
-
-//            return network;
-//        }
-//    }
-//}
+            return network;
+        }
+    }
+}

@@ -19,7 +19,7 @@
 
             for (var i = 0; i < layer.RowCount; i++)
             {
-                var unit = layer.SubMatrix(i, 1, 1, layer.ColumnCount - 1).ToColumnWiseArray();
+                var unit = layer.SubMatrix(i, 1, 0, layer.ColumnCount).ToColumnWiseArray();
                 var oldMax = unit.Max();
                 var oldMin = unit.Min();
 

@@ -55,13 +55,20 @@ namespace NeuronalNetSharp.Console
             //network = optimizer.OptimizeNetwork(network, data, 3);
             //network = optimizer.OptimizeNetwork(network, data, 4);
 
-            var network = new NewNeuronalNetwork(400, 10, 1);
-
-            var test = network.ComputeOutput(rawData.FirstOrDefault().Data);
             var labelMatrices = HelperFunctions.GetLabelMatrices(rawData);
+            var lambda = 0.00;
+            var alpha = 0.1;
+
+            var network = new NeuronalNetwork(400, 10, 1, lambda);
+
+            network.SetLayerSize(1, 25);
+
+            Console.WriteLine(network.ComputeCostResultSet(rawData, labelMatrices, lambda).Cost);
          
-            var k = Functions.SigmoidFunction(-0.23213321);
-            var n = network.ComputeCostResultSet(rawData, labelMatrices, 0.01);
+            var optimizer = new GradientDescentAlgorithm(lambda, alpha);
+            optimizer.IterationFinished += UpdateCostFunctionPlot;
+            optimizer.OptimizeNetwork(network, rawData, labelMatrices, 10);
+
 
 
             double[] x = null;
@@ -87,6 +94,12 @@ namespace NeuronalNetSharp.Console
             return;            
         }
 
+        public static void UpdateCostFunctionPlot(object sender, EventArgs e)
+        {
+            var args = (IterationFinishedEventArgs) e;
+            Console.WriteLine(args.Cost);
+        }
+
 
         public static void function1_grad(double[] x, ref double func, double[] grad, object obj)
         {
@@ -99,48 +112,6 @@ namespace NeuronalNetSharp.Console
             grad[1] = 4*Math.Pow(x[1] - 3, 3);
         }
 
-        //public static void function2_grad(double[] x, ref double func, double[] grad, object obj)
-        //{
-        //    var packer = (PackerTmp) obj;
-        //    ShapeHelper.ReshapeAndSetMatrices(x, packer.Network.Weights);
-        //    grad = ShapeHelper.ShapeMatrices(packer.LearningAlgorithm.ComputeDerivatives(packer.Datasets));
-        //    func = packer.LearningAlgorithm.ComputeCostRegularized(0.01, packer.Datasets);
-        //}
+
     }
 }
-
-
-
-
-
-
-
-//network.SetLayerSize(0, 5);
-
-            
-
-
-//            var stopwatch = new Stopwatch();
-//stopwatch.Start();
-
-//            stopwatch.Stop();
-//            Console.WriteLine(stopwatch.Elapsed);
-
-
-//            var tmp1 = rawData[6000].Label;
-//var tmp2 = rawData[5323].Label;
-
-//var test1 = network.ComputeOutput(rawData[25].Data);
-//var test2 = network.ComputeOutput(rawData[33].Data);
-//var test3 = network.ComputeOutput(rawData[37].Data);
-//var test4 = network.ComputeOutput(rawData[12].Data);
-//var test5 = network.ComputeOutput(rawData[6000].Data);
-//var test6 = network.ComputeOutput(rawData[25].Data);
-//var test7 = network.ComputeOutput(rawData[33].Data);
-//var test8 = network.ComputeOutput(rawData[37].Data);
-//var test9 = network.ComputeOutput(rawData[12].Data);
-//var test10 = network.ComputeOutput(rawData[5323].Data);
-
-
-//Console.WriteLine(Directory.GetCurrentDirectory());
-//            Console.ReadLine();

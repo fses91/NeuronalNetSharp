@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
+    using Core;
     using Import;
     using Microsoft.Win32;
 
@@ -20,6 +21,8 @@
 
         private void LoadTrainingData_Click(object sender, RoutedEventArgs e)
         {
+            var model = (MainViewModel)DataContext;
+
             var dataFile = string.Empty;
             var labelFile = string.Empty;
 
@@ -37,7 +40,8 @@
             labelFile = openFileDialog.FileName;
 
             var importer = new MinstSmallImporter();
-            ((MainViewModel) DataContext).TrainingData = importer.ImportData(dataFile, labelFile);
+            model.TrainingData = importer.ImportData(dataFile, labelFile);
+            model.Results = HelperFunctions.GetLabelMatrices(model.TrainingData);
         }
 
         private void TrainNetwork_Click(object sender, RoutedEventArgs e)

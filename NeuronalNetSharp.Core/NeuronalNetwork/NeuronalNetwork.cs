@@ -1,199 +1,173 @@
 ﻿namespace NeuronalNetSharp.Core.NeuronalNetwork
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.InteropServices.ComTypes;
+    using System.Threading;
     using System.Threading.Tasks;
     using Import;
-    using MathNet.Numerics;
     using MathNet.Numerics.Distributions;
     using MathNet.Numerics.LinearAlgebra;
     using MathNet.Numerics.LinearAlgebra.Double;
 
-    public class NeuronalNetwork
+    public class NeuronalNetwork : INeuronalNetwork
     {
-        public NeuronalNetwork(int sizeInputLayer, int amountHiddenLayers, int sizeOutputLayer)
+        public NeuronalNetwork(int sizeInputLayer, int sizeOutputLayer, int numberOfHiddenLayers = 0, double lambda = 0.01)
         {
             SizeInputLayer = sizeInputLayer;
             SizeOutputLayer = sizeOutputLayer;
+            NumberOfHiddenLayers = numberOfHiddenLayers;
+            Lambda = lambda;
 
-            NumberOfHiddenLayers = amountHiddenLayers;
-            HiddenLayers = new List<Matrix<double>>();
-
+            Layers = new List<Matrix<double>>();
             Weights = new List<Matrix<double>>();
+            BiasWeights = new List<Matrix<double>>();
 
             InitializeLayers();
+            InitializeBiases();
             InitializeWeights();
         }
 
-        public int NumberOfHiddenLayers { get; }
-
-        public double ComputeCost(IList<IDataset> trainingData, double lambda)
-        {
-            var labelMatrices = GetLabelMatrices(trainingData);
-
-            // Cost
-            var result = 0.0;
-            foreach (var dataset in trainingData)
-            {
-                var difference = ComputeOutput(dataset.Data) - labelMatrices[dataset.Label];
-                var norm = difference.CalculateNorm();
-                result += 1.0/2.0*Math.Pow(norm, 2);
-            }
-
-            result = result/trainingData.Count;
-
-            var reg = 0.0;
-            foreach (var weightVector in Weights)
-            {
-                reg +=
-                    weightVector.SubMatrix(0, weightVector.RowCount, 1, weightVector.ColumnCount - 1)
-                        .Map(d => Math.Pow(d, 2))
-                        .ColumnSums()
-                        .Sum();
-            }
-
-            reg = lambda/2.0*reg;
-
-            return reg + result;
-        }
-
-        public IList<Matrix<double>> ComputeGradients(IList<IDataset> trainingData, double lambda)
-        {
-            var labelMatrices = GetLabelMatrices(trainingData);
-            var deltaMatrices = InitilizeDeltaMatrices();
-
-            foreach (var dataset in trainingData)
-            {
-                var tmpDeltaVectors = new List<Matrix<double>>();
-                var output = ComputeOutput(dataset.Data);
-                var deltaLast = output - labelMatrices[dataset.Label];
-                //-(labelMatrices[dataset.Label] - output).PointwiseMultiply(output.PointwiseMultiply(1 - output));
-
-                tmpDeltaVectors.Add(deltaLast);
-
-                for (var j = Weights.Count - 1; j >= 1; j--)
-                {
-                    var tmp1 = Weights[j].Transpose()*tmpDeltaVectors.Last();
-                    var tmp2 = HiddenLayers[j - 1].Map(d => d*(1 - d));
-                    var delta = tmp1.PointwiseMultiply(tmp2);
-
-                    tmpDeltaVectors.Add(delta.SubMatrix(1, delta.RowCount - 1, 0, delta.ColumnCount));
-                }
-
-                // For the input layer.
-                tmpDeltaVectors.Reverse();
-                deltaMatrices[0] = deltaMatrices[0] +
-                                   tmpDeltaVectors[0]*DenseMatrix.Create(1, 1, 1).Append(dataset.Data.Transpose());
-
-                for (var j = 1; j < deltaMatrices.Count; j++)
-                    deltaMatrices[j] = deltaMatrices[j] + tmpDeltaVectors[j]*HiddenLayers[j - 1].Transpose();
-            }
-
-            Parallel.ForEach(deltaMatrices, matrix => matrix.Map(d => d/trainingData.Count));
-
-            return deltaMatrices;
-        }
-
-        public Matrix<double> ComputeOutput(Matrix<double> input)
-        {
-            var currentLayer = DenseMatrix.Create(1, 1, 1).Stack(input); //     .Append(input.Transpose()).Transpose();
-
-            for (var i = 0; i < HiddenLayers.Count; i++)
-            {
-                HiddenLayers[i].SetSubMatrix(1, 0, Weights[i]*currentLayer);
-                HiddenLayers[i].SetSubMatrix(1, 0,
-                    HiddenLayers[i].SubMatrix(1, HiddenLayers[i].RowCount - 1, 0, HiddenLayers[i].ColumnCount)
-                        .Map(SpecialFunctions.Logistic));
-
-                currentLayer = HiddenLayers[i];
-            }
-
-            var outputlayer = Weights.Last()*HiddenLayers.Last();
-            return outputlayer.Map(SpecialFunctions.Logistic);
-        }
-
-        public IList<Matrix<double>> HiddenLayers { get; }
-
-        public void SetLayerSize(int layer, int size)
-        {
-            HiddenLayers[layer] = DenseMatrix.OfColumnArrays(new double[size + 1]);
-            InitializeWeights();
-        }
+        public IList<Matrix<double>> BiasWeights { get; }
 
         public int SizeInputLayer { get; }
 
         public int SizeOutputLayer { get; }
 
-        public IList<Matrix<double>> Weights { get; set; }
+        public int NumberOfHiddenLayers { get; }
 
-        public void InitializeLayers()
+        public double Lambda { get; }
+
+        public IList<Matrix<double>> Layers { get; }
+
+        public IList<Matrix<double>> Weights { get; }
+
+        public CostResultSet ComputeCostResultSet(IList<IDataset> trainingData, IDictionary<string, Matrix<double>> results, double lambda)
         {
-            for (var i = 0; i < NumberOfHiddenLayers; i++)
+            var costResultSet = new CostResultSet
             {
-                var matrix = DenseMatrix.OfColumnArrays(new double[SizeInputLayer + 1]);
-                matrix[0, 0] = 1;
-                HiddenLayers.Add(matrix);
-            }
+                Cost = ComputeCost(trainingData, results, lambda),
+                Gradients = ComputeGradients(trainingData, results)
+            };
+
+            return costResultSet;
         }
 
-        /// <summary>
-        ///     Initialize weights for a full connected network where all hidden layers have the same size.
-        /// </summary>
-        public void InitializeWeights()
+        public Matrix<double> ComputeOutput(Matrix<double> input)
         {
-            // TODO überarbeiten, Überlegung wegen Weight initialisierung welchen Wert für Epsilon.
-            var epsilon = Math.Sqrt(6)/Math.Sqrt(SizeInputLayer + SizeOutputLayer);
-            Weights.Clear();
+            if (input.RowCount != SizeInputLayer || input.ColumnCount > 1)
+                throw new ArgumentException("Dimensions have to agree with the size of the input layer.");
 
-            if (NumberOfHiddenLayers <= 0)
+            Layers[0] = input;
+
+            for (var i = 0; i < Weights.Count; i++)
             {
-                Weights.Add(DenseMatrix.CreateRandom(SizeOutputLayer, SizeInputLayer + 1,
-                    new ContinuousUniform(-epsilon, epsilon)));
-                return;
+                Layers[i + 1] = Weights[i]*Layers[i];
+                Layers[i + 1] = Layers[i + 1] + BiasWeights[i];
+                Layers[i + 1].MapInplace(Functions.SigmoidFunction);
             }
+
+            return Layers.Last();
+        }
+
+        public void SetLayerSize(int layer, int size)
+        {
+            if (layer == 0 || layer == Layers.Count - 1)
+                throw new ArgumentException("You can't resize the input or output layer.");
+
+            Layers[layer] = DenseMatrix.OfColumnArrays(new double[size]);
+
+            InitializeBiases();
+            InitializeWeights();
+        }
+
+        private void InitializeBiases()
+        {
+            BiasWeights.Clear();
+            var epsilon = Math.Sqrt(6)/Math.Sqrt(SizeInputLayer + SizeOutputLayer);
+
+            for (var i = 0; i < Layers.Count - 1; i++)
+                BiasWeights.Add(DenseMatrix.CreateRandom(Layers[i + 1].RowCount, 1, new ContinuousUniform(-epsilon, epsilon)));
+        }
+
+        private void InitializeLayers()
+        {
+            Layers.Add(DenseMatrix.OfColumnArrays(new double[SizeInputLayer]));
 
             for (var i = 0; i < NumberOfHiddenLayers; i++)
-            {
-                if (i <= 0)
-                {
-                    Weights.Add(DenseMatrix.CreateRandom(HiddenLayers[0].RowCount - 1, SizeInputLayer + 1,
-                        new ContinuousUniform(-epsilon, epsilon)));
-                    continue;
-                }
+                Layers.Add(DenseMatrix.OfColumnArrays(new double[SizeInputLayer]));
 
-                Weights.Add(DenseMatrix.CreateRandom(HiddenLayers[i].RowCount - 1, HiddenLayers[i - 1].RowCount,
+            Layers.Add(DenseMatrix.OfColumnArrays(new double[SizeOutputLayer]));
+        }
+
+        private void InitializeWeights()
+        {
+            Weights.Clear();
+            var epsilon = Math.Sqrt(6)/Math.Sqrt(SizeInputLayer + SizeOutputLayer);
+
+            for (var i = 0; i < NumberOfHiddenLayers; i++)
+                Weights.Add(DenseMatrix.CreateRandom(Layers[i + 1].RowCount, Layers[i].RowCount,
                     new ContinuousUniform(-epsilon, epsilon)));
-            }
 
-            Weights.Add(DenseMatrix.CreateRandom(SizeOutputLayer, HiddenLayers.Last().RowCount,
+            Weights.Add(DenseMatrix.CreateRandom(SizeOutputLayer, Layers.Reverse().Skip(1).FirstOrDefault().RowCount,
                 new ContinuousUniform(-epsilon, epsilon)));
         }
 
-        private IList<Matrix<double>> InitilizeDeltaMatrices()
+        private double ComputeCost(IList<IDataset> trainingData, IDictionary<string, Matrix<double>> results, double lambda)
         {
-            IList<Matrix<double>> deltaVectors = new List<Matrix<double>>();
-            foreach (var weights in Weights)
-                deltaVectors.Add(new SparseMatrix(weights.RowCount, weights.ColumnCount));
+            var cost = 0.0;
+            var reg = 0.0;
 
-            return deltaVectors;
+            foreach (var dataset in trainingData)
+            {
+                var output = ComputeOutput(dataset.Data);
+                var error = output - results[dataset.Label];
+                cost += 1.0 / 2.0 * Math.Pow(error.L2Norm(), 2);
+            }
+            cost = 1.0 / trainingData.Count * cost;
+
+            Parallel.ForEach(Weights, matrix =>
+            {
+                reg += matrix.Map(x => Math.Pow(x, 2)).RowSums().Sum();
+            });
+            reg = lambda / 2 * reg;
+
+            return cost + reg;
         }
 
-        public static IDictionary<string, Matrix> GetLabelMatrices(IEnumerable<IDataset> trainingData)
+        private GradientResultSet ComputeGradients(IList<IDataset> trainingData, IDictionary<string, Matrix<double>> results)
         {
-            // Initialize Label Matrices
-            IDictionary<string, Matrix> lablesMatrices = new ConcurrentDictionary<string, Matrix>();
+            var deltas = HelperFunctions.InitializeMatricesWithSameDimensions(Weights);
+            var biasDeltas = HelperFunctions.InitializeMatricesWithSameDimensions(BiasWeights);
 
-            var distinctLabels = trainingData.Select(x => x.Label).Distinct().ToList();
-            for (var i = 0; i < distinctLabels.Count; i++)
+            foreach (var dataset in trainingData)
             {
-                var matrix = DenseMatrix.OfColumnArrays(new double[distinctLabels.Count()]);
-                matrix[i, 0] = 1;
-                lablesMatrices.Add(distinctLabels[i], matrix);
+                var tmpDeltas = new List<Matrix<double>>();
+
+                var output = ComputeOutput(dataset.Data);
+                var error = -(results[dataset.Label] - output).PointwiseMultiply(output.PointwiseMultiply(1 - output));
+                tmpDeltas.Add(error);
+
+                for (var i = Weights.Count - 1; i > 0; i--)
+                {
+                    var delta = (Weights[i].Transpose()*tmpDeltas.Last()).PointwiseMultiply(
+                        Layers[i].PointwiseMultiply(1 - Layers[i]));
+                    tmpDeltas.Add(delta);
+                }
+                tmpDeltas.Reverse();
+
+                for (var i = 0; i < tmpDeltas.Count; i++)
+                {
+                    deltas[i] = deltas[i] + tmpDeltas[i]*Layers[i].Transpose();
+                    biasDeltas[i] = biasDeltas[i] + tmpDeltas[i];
+                }
             }
 
-            return lablesMatrices;
+            Parallel.ForEach(deltas, matrix => matrix.MapInplace(v => 1.0/trainingData.Count*v));
+            Parallel.ForEach(biasDeltas, matrix => matrix.MapInplace(v => 1.0/trainingData.Count*v));
+
+            return new GradientResultSet { BiasGradients = biasDeltas, Gradients = deltas};
         }
     }
 }
