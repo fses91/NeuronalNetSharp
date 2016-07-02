@@ -56,7 +56,7 @@ namespace NeuronalNetSharp.WPF
             }
         }
 
-        public ICollection<IDataset> CrossValidationData { get; set; }
+        public IList<IDataset> CrossValidationData { get; set; }
 
         public int CrossValidationDataToUse { get; set; }
 
@@ -89,7 +89,7 @@ namespace NeuronalNetSharp.WPF
 
         public int OutputLayerSize { get; set; }
 
-        public ICollection<IDataset> TestData { get; set; }
+        public IList<IDataset> TestData { get; set; }
 
         public int TestDataToUse { get; set; }
 
@@ -106,7 +106,7 @@ namespace NeuronalNetSharp.WPF
 
         public int TraingDataToUse { get; set; }
 
-        public IEnumerable<IDataset> TrainingData { get; set; }
+        public IList<IDataset> TrainingData { get; set; }
 
         public Task TrainingTask { get; set; }
 
@@ -157,8 +157,8 @@ namespace NeuronalNetSharp.WPF
 
             CostFunctionLineSeries.Points.Add(new DataPoint(IterationCount, args.Cost));
 
-            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Left, Minimum = 0, Maximum = args.Cost + 0.005});
-            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Bottom, Minimum = 0, Maximum = IterationCount + 20});
+            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Left, Minimum = 0, Maximum = args.Cost + 2});
+            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Bottom, Minimum = 0, Maximum = IterationCount + 5});
 
             CostFunctionPlotModel.Series.Clear();
             plotModel.Series.Add(CostFunctionLineSeries);

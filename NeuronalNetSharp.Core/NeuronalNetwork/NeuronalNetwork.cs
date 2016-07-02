@@ -121,7 +121,7 @@
             foreach (var dataset in trainingData)
             {
                 var output = ComputeOutput(dataset.Data);
-                var error = -(results[dataset.Label] - output).PointwiseMultiply(output.Map(d => d * (1 - d)));
+                var error = output - results[dataset.Label];
                 cost += 1.0 / 2.0 * Math.Pow(error.CalculateNorm(), 2);
             }
             cost = 1.0 / trainingData.Count * cost;

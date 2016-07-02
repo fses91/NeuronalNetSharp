@@ -30,7 +30,7 @@ namespace NeuronalNetSharp.Core.Optimization
 
                 for (var j = 0; j < network.Weights.Count; j++)
                 {
-                    network.Weights[j] = network.Weights[j] - Alpha * cost.Gradients.Gradients[j];
+                    network.Weights[j] = network.Weights[j] - Alpha * (cost.Gradients.Gradients[j] + Lambda*network.Weights[j]);
                     network.BiasWeights[j] = network.BiasWeights[j] - Alpha * cost.Gradients.BiasGradients[j];
                 }
 

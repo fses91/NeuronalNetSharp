@@ -40,8 +40,10 @@
             labelFile = openFileDialog.FileName;
 
             var importer = new MinstSmallImporter();
-            model.TrainingData = importer.ImportData(dataFile, labelFile);
+            model.TrainingData = importer.ImportData(dataFile, labelFile).ToList();
+            model.TrainingData.Shuffle();
             model.Results = HelperFunctions.GetLabelMatrices(model.TrainingData);
+
         }
 
         private void TrainNetwork_Click(object sender, RoutedEventArgs e)
