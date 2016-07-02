@@ -28,11 +28,11 @@ namespace NeuronalNetSharp.Core.Optimization
             {
                 var cost = network.ComputeCostResultSet(traingData, results, Lambda);
 
-                Parallel.For(0, network.Weights.Count, i1 =>
+                for (var j = 0; j < network.Weights.Count; j++)
                 {
-                    network.Weights[i1] = network.Weights[i1] - Alpha*cost.Gradients.Gradients[i1];
-                    network.BiasWeights[i1] = network.BiasWeights[i1] - Alpha*cost.Gradients.BiasGradients[i1];
-                });
+                    network.Weights[j] = network.Weights[j] - Alpha * cost.Gradients.Gradients[j];
+                    network.BiasWeights[j] = network.BiasWeights[j] - Alpha * cost.Gradients.BiasGradients[j];
+                }
 
                 IterationFinished?.Invoke(this,
                     new IterationStartedEventArgs

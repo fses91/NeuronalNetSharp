@@ -157,8 +157,8 @@ namespace NeuronalNetSharp.WPF
 
             CostFunctionLineSeries.Points.Add(new DataPoint(IterationCount, args.Cost));
 
-            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Left, Minimum = 0, Maximum = args.Cost + 2});
-            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Bottom, Minimum = 0, Maximum = IterationCount + 40});
+            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Left, Minimum = 0, Maximum = args.Cost + 0.005});
+            plotModel.Axes.Add(new LinearAxis {Position = AxisPosition.Bottom, Minimum = 0, Maximum = IterationCount + 20});
 
             CostFunctionPlotModel.Series.Clear();
             plotModel.Series.Add(CostFunctionLineSeries);

@@ -63,8 +63,7 @@
 
             for (var i = 0; i < Weights.Count; i++)
             {
-                Layers[i + 1] = Weights[i]*Layers[i];
-                Layers[i + 1] = Layers[i + 1] + BiasWeights[i];
+                Layers[i + 1] = Weights[i]*Layers[i] + BiasWeights[i];
                 Layers[i + 1].MapInplace(Functions.SigmoidFunction);
             }
 
@@ -122,8 +121,8 @@
             foreach (var dataset in trainingData)
             {
                 var output = ComputeOutput(dataset.Data);
-                var error = output - results[dataset.Label];
-                cost += 1.0 / 2.0 * Math.Pow(error.L2Norm(), 2);
+                var error = -(results[dataset.Label] - output).PointwiseMultiply(output.Map(d => d * (1 - d)));
+                cost += 1.0 / 2.0 * Math.Pow(error.CalculateNorm(), 2);
             }
             cost = 1.0 / trainingData.Count * cost;
 
@@ -146,15 +145,12 @@
                 var tmpDeltas = new List<Matrix<double>>();
 
                 var output = ComputeOutput(dataset.Data);
-                var error = -(results[dataset.Label] - output).PointwiseMultiply(output.PointwiseMultiply(1 - output));
+                var error = -(results[dataset.Label] - output).PointwiseMultiply(output.Map(d => d*(1 - d)));
                 tmpDeltas.Add(error);
 
                 for (var i = Weights.Count - 1; i > 0; i--)
                 {
-                    var tmp1 = Weights[i].Transpose()*tmpDeltas.Last();
-                    var tmp2 = Layers[i].Map(d => d*(1 - d));
-                    var delta = tmp1.PointwiseMultiply(tmp2);
-                    //var delta = (Weights[i].Transpose()*tmpDeltas.Last()).PointwiseMultiply(Layers[i].PointwiseMultiply(1 - Layers[i]));
+                    var delta = (Weights[i].Transpose()*tmpDeltas.Last()).PointwiseMultiply(Layers[i].Map(d => d*(1 - d)));
                     tmpDeltas.Add(delta);
                 }
                 tmpDeltas.Reverse();
