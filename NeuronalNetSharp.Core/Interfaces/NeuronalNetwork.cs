@@ -105,13 +105,13 @@
                 HiddenLayers[i].SetSubMatrix(1, 0, Weights[i]*currentLayer);
                 HiddenLayers[i].SetSubMatrix(1, 0,
                     HiddenLayers[i].SubMatrix(1, HiddenLayers[i].RowCount - 1, 0, HiddenLayers[i].ColumnCount)
-                        .Map(SpecialFunctions.Logistic));
+                        .Map(HelperFunctions.SigmoidFunction));
 
                 currentLayer = HiddenLayers[i];
             }
 
             var outputlayer = Weights.Last()*HiddenLayers.Last();
-            return outputlayer.Map(SpecialFunctions.Logistic);
+            return outputlayer.Map(HelperFunctions.SigmoidFunction);
         }
 
         public IList<Matrix<double>> HiddenLayers { get; }
