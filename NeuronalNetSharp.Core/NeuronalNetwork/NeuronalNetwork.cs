@@ -151,8 +151,10 @@
 
                 for (var i = Weights.Count - 1; i > 0; i--)
                 {
-                    var delta = (Weights[i].Transpose()*tmpDeltas.Last()).PointwiseMultiply(
-                        Layers[i].PointwiseMultiply(1 - Layers[i]));
+                    var tmp1 = Weights[i].Transpose()*tmpDeltas.Last();
+                    var tmp2 = Layers[i].Map(d => d*(1 - d));
+                    var delta = tmp1.PointwiseMultiply(tmp2);
+                    //var delta = (Weights[i].Transpose()*tmpDeltas.Last()).PointwiseMultiply(Layers[i].PointwiseMultiply(1 - Layers[i]));
                     tmpDeltas.Add(delta);
                 }
                 tmpDeltas.Reverse();
