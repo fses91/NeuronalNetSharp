@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class IterationFinishedEventArgs : EventArgs
+    public class IterationStartedEventArgs : EventArgs
     {
         public double Cost { get; set; }
 

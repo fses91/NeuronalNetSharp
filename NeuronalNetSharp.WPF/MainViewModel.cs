@@ -152,7 +152,7 @@ namespace NeuronalNetSharp.WPF
 
         public void UpdateCostFunctionPlot(object sender, EventArgs e)
         {
-            var args = (IterationFinishedEventArgs) e;
+            var args = (IterationStartedEventArgs) e;
             var plotModel = new PlotModel();
 
             CostFunctionLineSeries.Points.Add(new DataPoint(IterationCount, args.Cost));

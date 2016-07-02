@@ -62,7 +62,7 @@
     <Compile Include="NeuronalNetwork\CostResultSet.cs" />
     <Compile Include="NeuronalNetwork\GradientResultSet.cs" />
     <Compile Include="NeuronalNetwork\NeuronalNetwork.cs" />
-    <Compile Include="Optimization\IterationFinishedEventArgs.cs" />
+    <Compile Include="Optimization\IterationStartedEventArgs.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="NeuronalNetwork\INeuronalNetwork.cs" />
     <Compile Include="HelperFunctions.cs" />

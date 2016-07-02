@@ -35,9 +35,9 @@ namespace NeuronalNetSharp.Core.Optimization
                 });
 
                 IterationFinished?.Invoke(this,
-                    new IterationFinishedEventArgs
+                    new IterationStartedEventArgs
                     {
-                        Cost = network.ComputeCostResultSet(traingData, results ,Lambda).Cost,
+                        Cost = cost.Cost,
                         Iteration = i
                     });
             }

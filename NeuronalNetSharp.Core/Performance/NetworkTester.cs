@@ -23,7 +23,6 @@ namespace NeuronalNetSharp.Core.Performance
 
                 for (var i = 0; i < result.RowCount; i++)
                 {
-                    var d = result[i, 0];
                     if (result[i, 0] > max)
                     {
                         max = result[i, 0];

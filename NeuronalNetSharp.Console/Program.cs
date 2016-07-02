@@ -9,6 +9,7 @@ namespace NeuronalNetSharp.Console
     using System.IO;
     using System.Linq;
     using Core.Optimization;
+    using Core.Performance;
     using Import;
     using MathNet.Numerics;
     using MathNet.Numerics.LinearAlgebra;
@@ -63,12 +64,11 @@ namespace NeuronalNetSharp.Console
 
             network.SetLayerSize(1, 25);
 
-            Console.WriteLine(network.ComputeCostResultSet(rawData, labelMatrices, lambda).Cost);
-         
             var optimizer = new GradientDescentAlgorithm(lambda, alpha);
             optimizer.IterationFinished += UpdateCostFunctionPlot;
-            optimizer.OptimizeNetwork(network, rawData, labelMatrices, 10);
+            optimizer.OptimizeNetwork(network, rawData, labelMatrices, 100);
 
+            var test = NetworkTester.TestNetwork(network, rawData, labelMatrices);
 
 
             double[] x = null;
@@ -96,7 +96,7 @@ namespace NeuronalNetSharp.Console
 
         public static void UpdateCostFunctionPlot(object sender, EventArgs e)
         {
-            var args = (IterationFinishedEventArgs) e;
+            var args = (IterationStartedEventArgs) e;
             Console.WriteLine(args.Cost);
         }
 
