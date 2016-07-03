@@ -39,7 +39,7 @@
 
             labelFile = openFileDialog.FileName;
 
-            var importer = new MinstSmallImporter();
+            var importer = new MinstImporter();
             model.TrainingData = importer.ImportData(dataFile, labelFile).ToList();
             model.TrainingData.Shuffle();
             model.Results = HelperFunctions.GetLabelMatrices(model.TrainingData);

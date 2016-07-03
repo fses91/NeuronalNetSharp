@@ -13,8 +13,6 @@
         {
             Control.LinearAlgebraProvider = new MklLinearAlgebraProvider();
             Control.UseNativeMKL();
-            Control.MaxDegreeOfParallelism = 1024;
-            Control.UseMultiThreading();
         }
     }
 }

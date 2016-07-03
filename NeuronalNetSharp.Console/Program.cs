@@ -57,24 +57,42 @@ namespace NeuronalNetSharp.Console
             //network = optimizer.OptimizeNetwork(network, data, 3);
             //network = optimizer.OptimizeNetwork(network, data, 4);
 
-            var labelMatrices = HelperFunctions.GetLabelMatrices(rawData);
             var lambda = 0.00;
             var alpha = 0.5;
-            var datas = rawData.Take(5000).ToList();
+            var datas = rawData.Take(200).ToList();
+            datas.Shuffle();
+            var labelMatrices = HelperFunctions.GetLabelMatrices(rawData);
 
-            var network = new NeuronalNetwork(400, 10, 0, lambda);
-            var network2 = new NeuronalNetwork(400, 10, 1, lambda);
 
-            network2.SetLayerSize(1, 25);
+            var network = new NeuronalNetwork(400, 10, 1, lambda);
+
+            network.SetLayerSize(1, 25);
 
             var optimizer = new GradientDescentAlgorithm(lambda, alpha);
             optimizer.IterationFinished += UpdateCostFunctionPlot;
-            optimizer.OptimizeNetwork(network, datas, labelMatrices, 100);
+            optimizer.OptimizeNetwork(network, datas, labelMatrices, 10);
+
+            var cost = network.ComputeCostResultSet(datas, labelMatrices, lambda);
+            var numCost = network.ComputeNumericalGradients(datas, labelMatrices, lambda, 0.0001);
+
+            for (int i = 0; i < numCost.Gradients.Count; i++)
+            {
+                for (int j = 0; j < numCost.Gradients[i].RowCount; j++)
+                {
+                    for (int k = 0; k < numCost.Gradients[i].ColumnCount; k++)
+                    {
+                        Console.WriteLine(cost.Gradients.Gradients[i][j, k] + "     " + numCost.Gradients[i][j, k]);
+
+                    }
+                }
+
+            }
+
+
+
             Console.WriteLine("#####");
-            optimizer.OptimizeNetwork(network2, datas, labelMatrices, 100);
 
             var test = NetworkTester.TestNetwork(network, datas, labelMatrices);
-            var test2 = NetworkTester.TestNetwork(network2, datas, labelMatrices);
 
 
             double[] x = null;

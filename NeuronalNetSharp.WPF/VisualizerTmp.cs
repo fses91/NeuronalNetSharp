@@ -25,7 +25,7 @@
 
                 // Scale between 0 - 255.
                 for (var j = 0; j < unit.Length; j++)
-                    unit[j] = (unit[j] - oldMin) * (newMax - newMin) / (oldMax - oldMin) + newMin;
+                    unit[j] = HelperFunctions.RescaleValue(unit[j], newMin, newMax, oldMin, oldMax);
 
                 var intTmp = unit.Select(Convert.ToInt32);
                 var byteTmp = intTmp.Select(x => (byte)x).ToArray();

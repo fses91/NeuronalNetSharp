@@ -115,7 +115,7 @@ namespace NeuronalNetSharp.WPF
         public void CreateNewNetwork()
         {
             Network = new NeuronalNetwork(InputLayerSize, OutputLayerSize, NumberOfHiddenLayers, Lambda);
-            Network.SetLayerSize(1, 25);
+            Network.SetLayerSize(1, 50);
             IterationCount = 0;
         }
 

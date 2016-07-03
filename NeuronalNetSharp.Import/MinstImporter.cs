@@ -26,12 +26,17 @@
                     var numPixels = 784;
                     var pixels = new double[numPixels];
 
+                    var newMin = -1.0;
+                    var newMax = 1;
+                    var oldMin = 0;
+                    var oldMax = 255;
+
                     for (var di = 0; di < numImages; di++)
                     {
                         // Initialize array.
                         
                         for (var i = 0; i < numPixels; i++)
-                            pixels[i] = brData.ReadByte();
+                            pixels[i] = (pixels[i] - oldMin) * (newMax - newMin) / (oldMax - oldMin) + newMin;
 
                         var matrix = DenseMatrix.OfColumnArrays(pixels);
                         var label = brLabel.ReadByte().ToString();

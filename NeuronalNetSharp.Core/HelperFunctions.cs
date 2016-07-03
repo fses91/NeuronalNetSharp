@@ -34,6 +34,11 @@
 
             return lablesMatrices;
         }
+
+        public static double RescaleValue(double value, double newMin, double newMax, double oldMin, double oldMax)
+        {
+            return (value - oldMin) * (newMax - newMin) / (oldMax - oldMin) + newMin;
+        }
     }
 }
 
