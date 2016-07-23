@@ -7,6 +7,9 @@
     using Core;
     using Import;
     using Microsoft.Win32;
+    using OxyPlot;
+    using OxyPlot.Axes;
+    using OxyPlot.Series;
 
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
@@ -39,7 +42,7 @@
 
             labelFile = openFileDialog.FileName;
 
-            var importer = new MinstImporter();
+            var importer = new MinstSmallImporter();
             model.TrainingData = importer.ImportData(dataFile, labelFile).ToList();
             model.TrainingData.Shuffle();
             model.Results = HelperFunctions.GetLabelMatrices(model.TrainingData);
@@ -93,7 +96,26 @@
         private void CreateNewNetworkButton_Click(object sender, RoutedEventArgs e)
         {
             var model = (MainViewModel) DataContext;
+            model.CostFunctionLineSeries = new LineSeries();
+            model.CostFunctionPlotModel = new PlotModel
+            {
+                Axes =
+                {
+                    new LinearAxis {Position = AxisPosition.Left, Minimum = 0, Maximum = 30},
+                    new LinearAxis {Position = AxisPosition.Bottom, Minimum = 0, Maximum = 120}
+                }
+            };
             model.CreateNewNetwork();
+        }
+
+        private void SetLayerSizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var model = (MainViewModel) DataContext;
+
+            var layer = Convert.ToInt32(LayerToChangeTextBox.Text);
+            var size = Convert.ToInt32(SizeToChangeTextBox.Text);
+
+            model.Network.SetLayerSize(layer, size);
         }
     }
 }

@@ -19,7 +19,7 @@
 
         IList<Matrix<double>> Layers { get; }
 
-        CostResultSet ComputeCostResultSet(IList<IDataset> trainingData, IDictionary<string, Matrix<double>> results, double lambda);
+        CostResultSet ComputeCostResultSet(IList<IDataset> trainingData, IDictionary<string, Matrix<double>> results, double lambda = 0);
 
         Matrix<double> ComputeOutput(Matrix<double> input);
 

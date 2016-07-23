@@ -33,7 +33,7 @@
         public IList<Matrix<double>> BiasWeights { get; }
 
         public CostResultSet ComputeCostResultSet(IList<IDataset> trainingData,
-            IDictionary<string, Matrix<double>> results, double lambda)
+            IDictionary<string, Matrix<double>> results, double lambda = 0)
         {
             var costResultSet = new CostResultSet
             {

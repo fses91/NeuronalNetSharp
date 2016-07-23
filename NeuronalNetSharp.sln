@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.Core", "Ne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.Console", "NeuronalNetSharp.Console\NeuronalNetSharp.Console.csproj", "{5F895DF7-FD4D-4EA2-902C-0BFCC7A8934E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.Test", "NeuronalNetSharp.Test\NeuronalNetSharp.Test.csproj", "{82A4EFBD-8A37-4DAA-A6D0-1DBBDB546037}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.Import", "NeuronalNetSharp.Import\NeuronalNetSharp.Import.csproj", "{898CBDAF-4C32-4158-B840-54B358CD821A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.WPF", "NeuronalNetSharp.WPF\NeuronalNetSharp.WPF.csproj", "{0AB071F4-02EA-4856-B14E-CB614BC7C00C}"
@@ -27,10 +25,6 @@ Global
 		{5F895DF7-FD4D-4EA2-902C-0BFCC7A8934E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F895DF7-FD4D-4EA2-902C-0BFCC7A8934E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F895DF7-FD4D-4EA2-902C-0BFCC7A8934E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{82A4EFBD-8A37-4DAA-A6D0-1DBBDB546037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{82A4EFBD-8A37-4DAA-A6D0-1DBBDB546037}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{82A4EFBD-8A37-4DAA-A6D0-1DBBDB546037}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{82A4EFBD-8A37-4DAA-A6D0-1DBBDB546037}.Release|Any CPU.Build.0 = Release|Any CPU
 		{898CBDAF-4C32-4158-B840-54B358CD821A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{898CBDAF-4C32-4158-B840-54B358CD821A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{898CBDAF-4C32-4158-B840-54B358CD821A}.Release|Any CPU.ActiveCfg = Release|Any CPU

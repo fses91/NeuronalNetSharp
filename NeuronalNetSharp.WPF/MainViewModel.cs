@@ -115,7 +115,6 @@ namespace NeuronalNetSharp.WPF
         public void CreateNewNetwork()
         {
             Network = new NeuronalNetwork(InputLayerSize, OutputLayerSize, NumberOfHiddenLayers, Lambda);
-            Network.SetLayerSize(1, 50);
             IterationCount = 0;
         }
 
@@ -165,6 +164,7 @@ namespace NeuronalNetSharp.WPF
             CostFunctionPlotModel = plotModel;
             IterationCount++;
         }
+
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

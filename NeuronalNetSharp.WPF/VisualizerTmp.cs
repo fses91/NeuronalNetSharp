@@ -36,18 +36,6 @@
             return images;
         }
 
-        //public static IList<ImageSource> VisualizeLayerGrayscale(INeuronalNetwork network, IBackpropagation backprob,
-        //    int layer, int width, int height, int iterations)
-        //{
-        //    var list = new List<ImageSource>();
-        //    var bytes = Visualizer.VisualizeNetworkLayer(network, backprob, layer, width, height, iterations);
-
-        //    foreach (var bytese in bytes)
-        //        list.Add(CreateBitmap(bytese, width, height));
-
-        //    return list;
-        //}
-
         public static BitmapSource CreateBitmap(byte[] bytes, int width, int height)
         {
             return BitmapSource.Create(width, height, 96, 96, PixelFormats.Gray8, BitmapPalettes.Gray256, bytes, 20);

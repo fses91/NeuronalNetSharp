@@ -6,7 +6,7 @@
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         xmlns:local="clr-namespace:NeuronalNetSharp.WPF"
         mc:Ignorable="d"
-        Title="Neuronal Net Sharp" Height="644.334" Width="881">
+        Title="Neuronal Net Sharp" Height="713.334" Width="881">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -35,6 +35,7 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -171,6 +172,26 @@
                     <TextBox Grid.Column="1" Name="LayerToVisualizeTextBox" Margin="5"></TextBox>
                     <Button Grid.Column="2" Name="VisualizeNodesButton" Margin="5" Click="VisualizeNodesButton_Click">Visualize</Button>
                 </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Header="Set Layer">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0">Layer</Label>
+                    <TextBox Grid.Column="1" Name="LayerToChangeTextBox"></TextBox>
+                    <Label Grid.Column="2">Size</Label>
+                    <TextBox Grid.Column="3" Name="SizeToChangeTextBox"></TextBox>
+                    <Button Grid.Column="4" Name="SetLayerSizeButton" Margin="10,0,0,0" Click="SetLayerSizeButton_Click">Set</Button>
+
+
+                </Grid>
+                
             </GroupBox>
             
             
