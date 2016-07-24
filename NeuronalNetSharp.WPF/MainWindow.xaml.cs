@@ -82,6 +82,16 @@
                 model?.TestNetworkWithCrossValidation();
         }
 
+        private void TestNetworkOnTestData_Click(object sender, RoutedEventArgs e)
+        {
+            var model = (MainViewModel) DataContext;
+
+            if (model != null && !model.TrainingTask.IsCompleted)
+                MessageBox.Show(this, "Network is not finished with training");
+            else
+                model?.TestNetworkWithTestSet();
+        }
+
         private void VisualizeNodesButton_Click(object sender, RoutedEventArgs e)
         {
             VisalizationListBox.Items.Clear();
@@ -117,5 +127,7 @@
 
             model.Network.SetLayerSize(layer, size);
         }
+
+        
     }
 }

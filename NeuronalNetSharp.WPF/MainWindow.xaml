@@ -105,7 +105,7 @@
                     
                     <Label >Data to use:</Label>
                     <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding TraingDataToUse}"></TextBox>
-                    <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Name="LoadTrainingData" Click="LoadTrainingData_Click">Load Training Data</Button>
+                    <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Name="LoadTrainingData" Click="LoadTrainingData_Click">Load Data</Button>
                 </Grid>
             </GroupBox>
             <GroupBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Header="Cross validation data">
@@ -143,6 +143,7 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -152,13 +153,18 @@
                     
                     <Button Grid.Row="0" Grid.Column="0" Margin="5" Name="TestNetworkButton" Click="TestNetworkButton_Click">Test Network On Test Data</Button>
                     <Label Grid.Row="0" Grid.Column="1">Error:</Label>
-                    <Label Grid.Row="0" Grid.Column="2" Content="{Binding TestError}"></Label>
+                    <Label Grid.Row="0" Grid.Column="2" Content="{Binding TrainingError}"></Label>
                     
                     <Button Grid.Row="1" Grid.Column="0" Margin="5" Name="TestNetworkOnCrossValidationDataButton" Click="TestNetworkOnCrossValidationDataButton_Click">Test Network On Cross Validation Data</Button>
                     <Label Grid.Row="1" Grid.Column="1">Error:</Label>
                     <Label Grid.Row="1" Grid.Column="2" Content="{Binding CrossValidationError}"></Label>
-                    
-                    <Button Grid.Row="2" Grid.Column="0" Margin="5" Name="TestNetworkOnTestData">Test Network On Test Data</Button>
+
+                    <Button Grid.Row="2" Grid.Column="0" Margin="5" Name="TestNetworkOnTestData" Click="TestNetworkOnTestData_Click">Test Network On Test Data</Button>
+                    <Label Grid.Row="2" Grid.Column="1">Error:</Label>
+                    <Label Grid.Row="2" Grid.Column="2" Content="{Binding TestError}"></Label>
+
+                    <Label Grid.Row="3" Grid.Column="0">Cost:</Label>
+                    <Label Grid.Row="3" Grid.Column="1" Content="{Binding Cost}"></Label>
                 </Grid>
             </GroupBox>
             <GroupBox Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Header="Visualization">

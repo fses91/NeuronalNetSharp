@@ -22,7 +22,9 @@ namespace NeuronalNetSharp.WPF
     {
         private PlotModel _costFunctionPlotModel;
         private double _crossValidationError;
+        private double _trainingError;
         private double _testError;
+        private double _cost;
 
         public MainViewModel()
         {
@@ -42,6 +44,17 @@ namespace NeuronalNetSharp.WPF
         }
 
         public double Alpha { get; set; }
+
+        public double Cost
+        {
+            get { return _cost; }
+            set
+            {
+                if (value == _cost) return;
+                _cost = value;
+                OnPropertyChanged(nameof(Cost));
+            }
+        }
 
         public LineSeries CostFunctionLineSeries { get; set; }
 
@@ -93,6 +106,17 @@ namespace NeuronalNetSharp.WPF
 
         public int TestDataToUse { get; set; }
 
+        public double TrainingError
+        {
+            get { return _trainingError; }
+            set
+            {
+                if (value == _trainingError) return;
+                _trainingError = value;
+                OnPropertyChanged(nameof(TrainingError));
+            }
+        }
+
         public double TestError
         {
             get { return _testError; }
@@ -136,7 +160,7 @@ namespace NeuronalNetSharp.WPF
 
         public void TestNetwork()
         {
-            TestError = NetworkTester.TestNetwork(
+            TrainingError = NetworkTester.TestNetwork(
                 Network,
                 TrainingData.Take(TraingDataToUse),
                 Results);
@@ -149,10 +173,18 @@ namespace NeuronalNetSharp.WPF
                 Results);
         }
 
+        public void TestNetworkWithTestSet()
+        {
+            TestError = NetworkTester.TestNetwork(Network,
+                TrainingData.Skip(TraingDataToUse).Skip(CrossValidationDataToUse).Take(TestDataToUse), Results);
+        }
+
         public void UpdateCostFunctionPlot(object sender, EventArgs e)
         {
             var args = (IterationStartedEventArgs) e;
             var plotModel = new PlotModel();
+
+            Cost = args.Cost;
 
             CostFunctionLineSeries.Points.Add(new DataPoint(IterationCount, args.Cost));
 
