@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NeuronalNetSharp.Import
+﻿namespace NeuronalNetSharp.Import
 {
+    using System;
+    using System.Collections.Generic;
     using System.IO;
     using CsvHelper;
-    using MathNet.Numerics.LinearAlgebra;
     using MathNet.Numerics.LinearAlgebra.Double;
 
     public class MinstSmallImporter
     {
+        /// <summary>
+        /// Imports a smaller version of the mnist dataset, which is only 20x20 pixels by picture..
+        /// </summary>
+        /// <param name="dataFile">The data file.</param>
+        /// <param name="labelFile">The label file.</param>
+        /// <returns>The tidy dataset.</returns>
         public ICollection<IDataset> ImportData(string dataFile, string labelFile)
         {
             var result = new List<IDataset>();
@@ -48,10 +49,5 @@ namespace NeuronalNetSharp.Import
 
             return result;
         }
-
-
-
-
-
     }
 }

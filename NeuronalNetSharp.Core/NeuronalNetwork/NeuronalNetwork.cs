@@ -11,6 +11,13 @@
 
     public class NeuronalNetwork : INeuronalNetwork
     {
+        /// <summary>
+        /// Initializes a new instance of a NeuronalNetwork.
+        /// </summary>
+        /// <param name="sizeInputLayer">The size of the input layer.</param>
+        /// <param name="sizeOutputLayer">The size of the output layer.</param>
+        /// <param name="numberOfHiddenLayers">The number of hidden layers.</param>
+        /// <param name="lambda">The lambda value.</param>
         public NeuronalNetwork(int sizeInputLayer, int sizeOutputLayer, int numberOfHiddenLayers = 0,
             double lambda = 0.01)
         {
@@ -30,8 +37,18 @@
 
         public double Lambda { get; }
 
+        /// <summary>
+        /// The bias weights of the network.
+        /// </summary>
         public IList<Matrix<double>> BiasWeights { get; }
 
+        /// <summary>
+        /// Compute the cost of the network.
+        /// </summary>
+        /// <param name="trainingData">The training data.</param>
+        /// <param name="results">The desired results for each label.</param>
+        /// <param name="lambda">The lambda value of the network.</param>
+        /// <returns>The cost result set.</returns>
         public CostResultSet ComputeCostResultSet(IList<IDataset> trainingData,
             IDictionary<string, Matrix<double>> results, double lambda = 0)
         {
@@ -92,6 +109,11 @@
             return resultSet;
         }
 
+        /// <summary>
+        /// Calcultes the output for a given input.
+        /// </summary>
+        /// <param name="input">Input for the network</param>
+        /// <returns>Output for given input.</returns>
         public Matrix<double> ComputeOutput(Matrix<double> input)
         {
             if (input.RowCount != SizeInputLayer || input.ColumnCount > 1)
@@ -108,10 +130,21 @@
             return Layers.Last();
         }
 
+        /// <summary>
+        /// The layers of the network.
+        /// </summary>
         public IList<Matrix<double>> Layers { get; }
 
+        /// <summary>
+        /// The number of hidden layers.
+        /// </summary>
         public int NumberOfHiddenLayers { get; }
 
+        /// <summary>
+        /// Set the size of a specific layer in the network.
+        /// </summary>
+        /// <param name="layer">The layer you want to change.</param>
+        /// <param name="size">The new size.</param>
         public void SetLayerSize(int layer, int size)
         {
             if (layer == 0 || layer == Layers.Count - 1)
@@ -123,12 +156,24 @@
             InitializeWeights();
         }
 
+        /// <summary>
+        /// The size of the input layer.
+        /// </summary>
         public int SizeInputLayer { get; }
 
+        /// <summary>
+        /// The size of the output layer.
+        /// </summary>
         public int SizeOutputLayer { get; }
 
+        /// <summary>
+        /// The weights of the network.
+        /// </summary>
         public IList<Matrix<double>> Weights { get; }
 
+        /// <summary>
+        /// Initialize the bias weiths of the network.
+        /// </summary>
         private void InitializeBiases()
         {
             BiasWeights.Clear();
@@ -139,6 +184,9 @@
                     new ContinuousUniform(-epsilon, epsilon)));
         }
 
+        /// <summary>
+        /// Initializes the layers of the network.
+        /// </summary>
         private void InitializeLayers()
         {
             Layers.Add(DenseMatrix.OfColumnArrays(new double[SizeInputLayer]));
@@ -149,6 +197,9 @@
             Layers.Add(DenseMatrix.OfColumnArrays(new double[SizeOutputLayer]));
         }
 
+        /// <summary>
+        /// Initilizes the weights of the network.
+        /// </summary>
         private void InitializeWeights()
         {
             Weights.Clear();
@@ -162,6 +213,13 @@
                 new ContinuousUniform(-epsilon, epsilon)));
         }
 
+        /// <summary>
+        /// Computes the costs for the network.
+        /// </summary>
+        /// <param name="trainingData">The training data.</param>
+        /// <param name="results">The desired results for the labels.</param>
+        /// <param name="lambda">The lambda value.</param>
+        /// <returns>The costs of the network.</returns>
         private double ComputeCost(IList<IDataset> trainingData, IDictionary<string, Matrix<double>> results,
             double lambda)
         {
@@ -182,6 +240,12 @@
             return cost + reg;
         }
 
+        /// <summary>
+        /// Calculates the gradients of the weights of the network.
+        /// </summary>
+        /// <param name="trainingData">The traing data.</param>
+        /// <param name="results">The desired results for the labels.</param>
+        /// <returns>The gradients of the network weights.</returns>
         private GradientResultSet ComputeGradients(IList<IDataset> trainingData,
             IDictionary<string, Matrix<double>> results)
         {

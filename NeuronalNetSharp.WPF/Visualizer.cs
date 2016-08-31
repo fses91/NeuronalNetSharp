@@ -8,8 +8,15 @@
     using Core;
     using MathNet.Numerics.LinearAlgebra;
 
-    public static class VisualizerTmp
+    public static class Visualizer
     {
+        /// <summary>
+        /// Creates a imagesource for the visualization of the network nodes.
+        /// </summary>
+        /// <param name="layer">The layer to visualize.</param>
+        /// <param name="width">The width of the imagesource.</param>
+        /// <param name="height">The height of the imagesource.</param>
+        /// <returns>The image source to visualize the weights.</returns>
         public static IList<ImageSource> VisualizeLayerGrayscale(Matrix<double> layer, int width, int height)
         {
             const int newMin = 0;
@@ -35,7 +42,14 @@
 
             return images;
         }
-
+        
+        /// <summary>
+        /// Creates a bitmap source.
+        /// </summary>
+        /// <param name="bytes">The byte array.</param>
+        /// <param name="width">The width of the bitmap source.</param>
+        /// <param name="height">The heights of the bitmap source.</param>
+        /// <returns>The bitmap source.</returns>
         public static BitmapSource CreateBitmap(byte[] bytes, int width, int height)
         {
             return BitmapSource.Create(width, height, 96, 96, PixelFormats.Gray8, BitmapPalettes.Gray256, bytes, 20);

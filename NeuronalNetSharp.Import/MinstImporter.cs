@@ -6,6 +6,12 @@
 
     public class MinstImporter
     {
+        /// <summary>
+        /// Imports the mnist data.
+        /// </summary>
+        /// <param name="dataFile">The data file.</param>
+        /// <param name="labelFile">The label file.</param>
+        /// <returns>The tidy dataset.</returns>
         public ICollection<IDataset> ImportData(string dataFile, string labelFile)
         {
             var result = new List<IDataset>();

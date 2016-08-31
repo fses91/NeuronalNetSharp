@@ -9,22 +9,22 @@
     public interface IDataset
     {
         /// <summary>
-        ///     The data.
+        /// Gets of sets the data.
         /// </summary>
         Matrix Data { get; }
 
         /// <summary>
-        ///     The label for the data.
+        /// Gets of sets the label.
         /// </summary>
         string Label { get; }
 
         /// <summary>
-        ///     The number of columns of the input data.
+        /// Gets of sets the number of columns.
         /// </summary>
         int NumberOfColumns { get; }
 
         /// <summary>
-        ///     The number of rows of the input data.
+        /// Gets or sets the number of rows. 
         /// </summary>
         int NumberOfRows { get; }
     }
