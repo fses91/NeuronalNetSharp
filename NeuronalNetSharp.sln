@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.Core", "NeuronalNetSharp.Core\NeuronalNetSharp.Core.csproj", "{337805D0-D752-42C6-877A-F4873DA0A2FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.Console", "NeuronalNetSharp.Console\NeuronalNetSharp.Console.csproj", "{5F895DF7-FD4D-4EA2-902C-0BFCC7A8934E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.Import", "NeuronalNetSharp.Import\NeuronalNetSharp.Import.csproj", "{898CBDAF-4C32-4158-B840-54B358CD821A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronalNetSharp.WPF", "NeuronalNetSharp.WPF\NeuronalNetSharp.WPF.csproj", "{0AB071F4-02EA-4856-B14E-CB614BC7C00C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{337805D0-D752-42C6-877A-F4873DA0A2FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{337805D0-D752-42C6-877A-F4873DA0A2FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{337805D0-D752-42C6-877A-F4873DA0A2FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{337805D0-D752-42C6-877A-F4873DA0A2FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F895DF7-FD4D-4EA2-902C-0BFCC7A8934E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F895DF7-FD4D-4EA2-902C-0BFCC7A8934E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F895DF7-FD4D-4EA2-902C-0BFCC7A8934E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F895DF7-FD4D-4EA2-902C-0BFCC7A8934E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{898CBDAF-4C32-4158-B840-54B358CD821A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{898CBDAF-4C32-4158-B840-54B358CD821A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{898CBDAF-4C32-4158-B840-54B358CD821A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{898CBDAF-4C32-4158-B840-54B358CD821A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AB071F4-02EA-4856-B14E-CB614BC7C00C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AB071F4-02EA-4856-B14E-CB614BC7C00C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AB071F4-02EA-4856-B14E-CB614BC7C00C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AB071F4-02EA-4856-B14E-CB614BC7C00C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

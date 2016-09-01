@@ -1,0 +1,207 @@
+﻿<Window x:Class="NeuronalNetSharp.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+        xmlns:local="clr-namespace:NeuronalNetSharp.WPF"
+        mc:Ignorable="d"
+        Title="Neuronal Net Sharp" Height="713.334" Width="881">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="50*"/>
+        </Grid.ColumnDefinitions>
+
+        <oxy:PlotView Grid.Row="0" Grid.Column="0" Name="PlotView" Margin="5" Model="{Binding CostFunctionPlotModel}"></oxy:PlotView>
+        <ListBox Grid.Row="1" Grid.Column="0" Name="VisalizationListBox">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="3"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            
+        </ListBox>
+        
+
+        <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <GroupBox Grid.Column="0" Grid.Row="0" Header="Network" Grid.ColumnSpan="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Label Grid.Column="0" Grid.Row="0">Input size:</Label>
+                    <TextBox Grid.Column="1" Grid.Row="0" Name="InputLayerSize" Text="{Binding InputLayerSize}"></TextBox>
+
+                    <Label Grid.Column="0" Grid.Row="1">Lables:</Label>
+                    <TextBox Grid.Column="1" Grid.Row="1" Name="OutputLayerSize" Text="{Binding OutputLayerSize}"></TextBox>
+
+                    <Label Grid.Column="0" Grid.Row="2">Hidden layers:</Label>
+                    <TextBox Grid.Column="1" Grid.Row="2" Name="AmountHiddenLayers" Text="{Binding NumberOfHiddenLayers}"></TextBox>
+                    
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="0" Grid.Row="1" Header="Training" Grid.ColumnSpan="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Width="auto">Iterations:</Label>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Iterations}"></TextBox>
+                    <Label  Grid.Row="1" Grid.Column="0" Width="auto">Alpha:</Label>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Alpha}"></TextBox>
+                    <Label Grid.Row="2" Grid.Column="0"  Width="auto">Lambda:</Label>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Lambda}"></TextBox>
+                    <Button Name="CreateNewNetworkButton" Grid.Row="3" Grid.Column="1" Click="CreateNewNetworkButton_Click">Create New Network</Button>
+                    <Button Name="TrainNetwork" Grid.Row="4" Grid.Column="1" Margin="0,5,0,0" Click="TrainNetwork_Click">Train Network</Button>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Header="Training data">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    
+                    <Label >Data to use:</Label>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding TraingDataToUse}"></TextBox>
+                    <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Name="LoadTrainingData" Click="LoadTrainingData_Click">Load Data</Button>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Header="Cross validation data">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Label >Data to use:</Label>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding CrossValidationDataToUse}"></TextBox>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Header="Test data">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Label >Data to use:</Label>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding TestDataToUse}"></TextBox>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Header="Test">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition ></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Button Grid.Row="0" Grid.Column="0" Margin="5" Name="TestNetworkButton" Click="TestNetworkButton_Click">Test Network On Test Data</Button>
+                    <Label Grid.Row="0" Grid.Column="1">Error:</Label>
+                    <Label Grid.Row="0" Grid.Column="2" Content="{Binding TrainingError}"></Label>
+                    
+                    <Button Grid.Row="1" Grid.Column="0" Margin="5" Name="TestNetworkOnCrossValidationDataButton" Click="TestNetworkOnCrossValidationDataButton_Click">Test Network On Cross Validation Data</Button>
+                    <Label Grid.Row="1" Grid.Column="1">Error:</Label>
+                    <Label Grid.Row="1" Grid.Column="2" Content="{Binding CrossValidationError}"></Label>
+
+                    <Button Grid.Row="2" Grid.Column="0" Margin="5" Name="TestNetworkOnTestData" Click="TestNetworkOnTestData_Click">Test Network On Test Data</Button>
+                    <Label Grid.Row="2" Grid.Column="1">Error:</Label>
+                    <Label Grid.Row="2" Grid.Column="2" Content="{Binding TestError}"></Label>
+
+                    <Label Grid.Row="3" Grid.Column="0">Cost:</Label>
+                    <Label Grid.Row="3" Grid.Column="1" Content="{Binding Cost}"></Label>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Header="Visualization">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition ></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label>Layer:</Label>
+                    <TextBox Grid.Column="1" Name="LayerToVisualizeTextBox" Margin="5"></TextBox>
+                    <Button Grid.Column="2" Name="VisualizeNodesButton" Margin="5" Click="VisualizeNodesButton_Click">Visualize</Button>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Header="Set Layer">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0">Layer</Label>
+                    <TextBox Grid.Column="1" Name="LayerToChangeTextBox"></TextBox>
+                    <Label Grid.Column="2">Size</Label>
+                    <TextBox Grid.Column="3" Name="SizeToChangeTextBox"></TextBox>
+                    <Button Grid.Column="4" Name="SetLayerSizeButton" Margin="10,0,0,0" Click="SetLayerSizeButton_Click">Set</Button>
+
+
+                </Grid>
+                
+            </GroupBox>
+            
+            
+                     
+        </Grid>
+    </Grid>
+</Window>
