@@ -6,14 +6,14 @@
 # Instructions
 
 ```C#
-// Parameter
+  // Parameter
   var lambda = 0.00;
   var alpha = 0.5;
   var numberOfHiddenLayers = 1;
   var inputLayerSize = 400;
   var outputLayerSize = 10;
   
-// Create network
+  // Create network
   var network = new NeuronalNetwork(inputLayerSize, outputLayerSize, numberOfHiddenLayers, lambda);
   
   var optimizer = new GradientDescentAlgorithm(lambda, alpha);
