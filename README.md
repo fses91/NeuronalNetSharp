@@ -14,9 +14,9 @@ NeuronalNetSharp is a framework for creating, training and testing of neuronal n
   var inputLayerSize = 400;
   var outputLayerSize = 10;
   
-  // The GetLabelMatrices function looks in the traingdata for all distinct labels and creates 
+  // The GetLabelMatrices function looks in the traingdata for all distinct labels and creates a dictionary with 
+  // the unique label and a unique result matrix
   var labelMatrices = HelperFunctions.GetLabelMatrices(rawData);
-  
   
   // Create network
   var network = new NeuronalNetwork(inputLayerSize, outputLayerSize, numberOfHiddenLayers, lambda);
