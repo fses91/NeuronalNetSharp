@@ -5,5 +5,10 @@
 
 # Instructions
 ```C#
-  var i = 34;
+  var lambda = 0.00;
+  var alpha = 0.5;
+  var numberOfHiddenLayers = 1;
+  var inputLayerSize = 400;
+  var outputLayerSize = 10;
+  var network = new NeuronalNetwork(inputLayerSize, outputLayerSize, numberOfHiddenLayers, lambda);
 ```
