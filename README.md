@@ -5,7 +5,9 @@ NeuronalNetSharp is a framework for creating, training and testing of neuronal n
 [![Build status](https://ci.appveyor.com/api/projects/status/fa8xwx98a0n60u3r/branch/development?svg=true)](https://ci.appveyor.com/project/FlorianSestak/neuronalnetsharp/branch/development)
 
 # Instructions
+If you want to use the framework in your application, build the Core project and put the dll in your project.
 
+# Example
 ```C#
   // Parameter
   var lambda = 0.00;
