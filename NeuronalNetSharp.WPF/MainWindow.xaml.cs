@@ -64,12 +64,12 @@
             var model = (MainViewModel) DataContext;
 
             if (model?.Network == null)
-                MessageBox.Show(this, "Not network was loaded");
+                MessageBox.Show(this, "No network was loaded.");
 
             if (model?.TrainingData == null || !model.TrainingData.Any())
                 MessageBox.Show(this, "No training data was loaded.", ContentStringFormat, MessageBoxButton.OK);
 
-            model?.TrainNetwork();
+            model.TrainNetwork();
         }
         
         /// <summary>
@@ -83,6 +83,10 @@
 
             if (model?.TrainingTask != null && !model.TrainingTask.IsCompleted)
                 MessageBox.Show(this, "Network is not finished with training.");
+            else if (model?.Network == null)
+                MessageBox.Show(this, "No network was loaded.");
+            else if (model?.TrainingData == null)
+                MessageBox.Show(this, "No traingdata was loaded");
             else
                 model?.TestNetwork();
         }
@@ -127,7 +131,6 @@
             VisalizationListBox.Items.Clear();
             var model = (MainViewModel) DataContext;
             var btmap = Visualizer.VisualizeLayerGrayscale(model.Network.Weights[Convert.ToInt32(LayerToVisualizeTextBox.Text)], 20, 20);
-            //var btmap = VisualizerTmp.VisualizeLayerGrayscale(model.Network, model.BackpropagationAlgorithm, Convert.ToInt32(LayerToVisualizeTextBox.Text), 28, 28, 10);
 
             foreach (var imageSource in btmap)
                 VisalizationListBox.Items.Add(new Image {Source = imageSource, Width = 100, Height = 100});
